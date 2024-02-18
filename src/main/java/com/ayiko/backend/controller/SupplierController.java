@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/suppliers")
+@RequestMapping("api/v1/suppliers")
 public class SupplierController {
 
     @Autowired
@@ -48,6 +48,16 @@ public class SupplierController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSupplier(@PathVariable UUID id) {
+        boolean deleted = supplierService.deleteSupplier(id);
+        if (deleted) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/authenticate/")
+    public ResponseEntity<Void> authenticateSupplier(@RequestBody UUID id) {
         boolean deleted = supplierService.deleteSupplier(id);
         if (deleted) {
             return ResponseEntity.ok().build();

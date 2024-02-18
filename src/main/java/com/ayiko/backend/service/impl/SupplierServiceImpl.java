@@ -49,6 +49,11 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
+    public SupplierDTO getSupplierByEmail(String email) {
+        return repository.findByEmailAddress(email).map(EntityDTOConverter::convertSupplierEntityToSupplierDTO).orElse(null);
+    }
+
+    @Override
     public List<SupplierDTO> getAllSuppliers() {
         return repository.findAll().stream().map(EntityDTOConverter::convertSupplierEntityToSupplierDTO).toList();
     }

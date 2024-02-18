@@ -1,0 +1,90 @@
+[
+  {
+    "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    "companyName": "Acme Corporation",
+    "ownerName": "John Doe",
+    "phoneNumber": "+1234567890",
+    "mobileMoneyNumber": "9876543210",
+    "bankAccountNumber": "123456789",
+    "city": "Metropolis",
+    "emailAddress": "johndoe@acme.com",
+    "password": "password123"
+  },
+  {
+    "id": "2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a",
+    "companyName": "Globex Corporation",
+    "ownerName": "Jane Smith",
+    "phoneNumber": "+0987654321",
+    "mobileMoneyNumber": "8765432109",
+    "bankAccountNumber": "987654321",
+    "city": "Springfield",
+    "emailAddress": "janesmith@globex.com",
+    "password": "password456"
+  },
+  {
+    "id": "3f4g5h6j-7k8l-9m0n-1o2p-3q4r5s6t7u8v",
+    "companyName": "Soylent Corp",
+    "ownerName": "Alice Johnson",
+    "phoneNumber": "+1122334455",
+    "mobileMoneyNumber": "9988776655",
+    "bankAccountNumber": "112233445",
+    "city": "New New York",
+    "emailAddress": "alicejohnson@soylent.com",
+    "password": "password789"
+  },
+  {
+    "id": "4h5i6j7k-8l9m-0n1o-2p3q-4r5s6t7u8v9w",
+    "companyName": "Initech",
+    "ownerName": "Bob Brown",
+    "phoneNumber": "+1223344556",
+    "mobileMoneyNumber": "8899776655",
+    "bankAccountNumber": "223344556",
+    "city": "Office Park",
+    "emailAddress": "bobbrown@initech.com",
+    "password": "password101"
+  },
+  {
+    "id": "5j6k7l8m-9n0o-p1q2-r3s4-t5u6v7w8x9y0",
+    "companyName": "Umbrella Corporation",
+    "ownerName": "Clara Oswald",
+    "phoneNumber": "+1334455667",
+    "mobileMoneyNumber": "7766554433",
+    "bankAccountNumber": "334455667",
+    "city": "Raccoon City",
+    "emailAddress": "claraoswald@umbrella.com",
+    "password": "password202"
+  },
+  {
+    "id": "6k7l8m9n-0o1p-q2r3-s4t5-u6v7w8x9y0z1",
+    "companyName": "Vandelay Industries",
+    "ownerName": "Dan Green",
+    "phoneNumber": "+1445566778",
+    "mobileMoneyNumber": "6655443322",
+    "bankAccountNumber": "445566778",
+    "city": "New York",
+    "emailAddress": "dangreen@vandelay.com",
+    "password": "password303"
+  },
+  {
+    "id": "7l8m9n0o-p1q2-r3s4-t5u6-v7w8x9y0z1a2",
+    "companyName": "Hooli",
+    "ownerName": "Eve White",
+    "phoneNumber": "+1556677889",
+    "mobileMoneyNumber": "5544332211",
+    "bankAccountNumber": "556677889",
+    "city": "Silicon Valley",
+    "emailAddress": "evewhite@hooli.com",
+    "password": "password404"
+  },
+  {
+    "id": "8m9n0o1p-q2r3-s4t5-u6v7-w8x9y0z1a2b3",
+    "companyName": "Massive Dynamic",
+    "ownerName": "Frank Black",
+    "phoneNumber": "+1667788990",
+    "mobileMoneyNumber": "4433221100",
+    "bankAccountNumber": "667788990",
+    "city": "Boston",
+    "emailAddress": "asdf@ads.com",
+    "password": "password505"
+    }
+  ]

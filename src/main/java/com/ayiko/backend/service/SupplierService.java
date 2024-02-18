@@ -11,5 +11,7 @@ public interface SupplierService {
     SupplierDTO getSupplierById(UUID id);
     List<SupplierDTO> getAllSuppliers();
 
+    SupplierDTO getSupplierByEmail(String email);
+
     boolean resetPassword(UUID id, String currentPassword, String newPassword);
 }

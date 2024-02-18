@@ -1,0 +1,67 @@
+[
+  {
+    "id": "e0d123e5-35c1-4f00-8ff9-75bb11d4e48b",
+    "name": "Alpha Inc.",
+    "description": "Leading provider of business solutions.",
+    "category": "Business",
+    "supplierId": "f0d123e5-35c1-4f00-8ff9-75bb11d4e47c",
+    "unitPrice": "199.99",
+    "quantity": "50",
+    "imageUrl": "http://example.com/image1.jpg",
+    "isAvailable": true,
+    "createdAt": "2023-01-01T00:00:00Z",
+    "updatedAt": "2023-01-02T00:00:00Z"
+  },
+  {
+    "id": "d0e123e5-35c1-4f00-8ff9-75bb11d4e48c",
+    "name": "Beta Technologies",
+    "description": "Innovative tech solutions for the modern age.",
+    "category": "Technology",
+    "supplierId": "a0d123e5-35c1-4f00-8ff9-75bb11d4e48d",
+    "unitPrice": "299.99",
+    "quantity": "30",
+    "imageUrl": "http://example.com/image2.jpg",
+    "isAvailable": false,
+    "createdAt": "2023-02-01T00:00:00Z",
+    "updatedAt": "2023-02-05T00:00:00Z"
+  },
+  {
+    "id": "b0f123e5-35c1-4f00-8ff9-75bb11d4e48e",
+    "name": "Gamma Services",
+    "description": "Quality services and customer satisfaction.",
+    "category": "Services",
+    "supplierId": "c0d123e5-35c1-4f00-8ff9-75bb11d4e48f",
+    "unitPrice": "99.99",
+    "quantity": "100",
+    "imageUrl": "http://example.com/image3.jpg",
+    "isAvailable": true,
+    "createdAt": "2023-03-01T00:00:00Z",
+    "updatedAt": "2023-03-10T00:00:00Z"
+  },
+  {
+    "id": "a1d223e5-35c1-4f00-8ff9-75bb11d4e410",
+    "name": "Delta Corp",
+    "description": "Global leader in manufacturing.",
+    "category": "Manufacturing",
+    "supplierId": "b1e123e5-35c1-4f00-8ff9-75bb11d4e411",
+    "unitPrice": "499.99",
+    "quantity": "20",
+    "imageUrl": "http://example.com/image4.jpg",
+    "isAvailable": true,
+    "createdAt": "2023-04-01T00:00:00Z",
+    "updatedAt": "2023-04-15T00:00:00Z"
+  },
+  {
+    "id": "c2f223e5-35c1-4f00-8ff9-75bb11d4e412",
+    "name": "Epsilon Limited",
+    "description": "Eco-friendly products for a better tomorrow.",
+    "category": "Eco",
+    "supplierId": "d2g123e5-35c1-4f00-8ff9-75bb11d4e413",
+    "unitPrice": "159.99",
+    "quantity": "40",
+    "imageUrl": "http://example.com/image5.jpg",
+    "isAvailable": false,
+    "createdAt": "2023-05-01T00:00:00Z",
+    "updatedAt": "2023-05-20T00:00:00Z"
+  }
+]
