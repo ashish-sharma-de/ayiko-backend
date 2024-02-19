@@ -1,8 +1,11 @@
 package com.ayiko.backend.controller;
 
+import com.ayiko.backend.config.JWTTokenProvider;
+import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,14 +19,27 @@ public class SupplierController {
     @Autowired
     private SupplierService supplierService;
 
+    @Autowired
+    private JWTTokenProvider tokenProvider;
+
     @PostMapping
     public SupplierDTO createSupplier(@RequestBody SupplierDTO supplierDTO) {
         return supplierService.createSupplier(supplierDTO);
     }
 
     @GetMapping
-    public List<SupplierDTO> getAllSuppliers() {
+    public List<SupplierDTO> getAllSuppliers(@RequestHeader("Authorization") String authorizationHeader) {
+        if (!validateToken(authorizationHeader)) {
+            return null;
+        }
         return supplierService.getAllSuppliers();
+    }
+
+    private boolean validateToken(String authorizationHeader) {
+        if (tokenProvider.validateToken(authorizationHeader.substring(7))) {
+            return true;
+        }
+        return false;
     }
 
     @GetMapping("/{id}")
@@ -56,14 +72,10 @@ public class SupplierController {
         }
     }
 
-    @PostMapping("/authenticate/")
-    public ResponseEntity<Void> authenticateSupplier(@RequestBody UUID id) {
-        boolean deleted = supplierService.deleteSupplier(id);
-        if (deleted) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PostMapping("/authenticate")
+    public ResponseEntity<String> authenticateSupplier(@RequestBody LoginDTO loginDTO) {
+        String token = supplierService.authenticateSupplier(loginDTO);
+        return token != null ? ResponseEntity.ok(token) : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
 }

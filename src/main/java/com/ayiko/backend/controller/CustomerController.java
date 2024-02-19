@@ -1,8 +1,10 @@
 package com.ayiko.backend.controller;
 
-import com.ayiko.backend.dto.SupplierDTO;
-import com.ayiko.backend.service.SupplierService;
+import com.ayiko.backend.dto.CustomerDTO;
+import com.ayiko.backend.dto.LoginDTO;
+import com.ayiko.backend.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,33 +16,34 @@ import java.util.UUID;
 public class CustomerController {
 
     @Autowired
-    private SupplierService supplierService;
+    private CustomerService customerService;
+
 
     @PostMapping
-    public SupplierDTO createCustomer(@RequestBody SupplierDTO supplierDTO) {
-        return supplierService.createSupplier(supplierDTO);
+    public CustomerDTO createCustomer(@RequestBody CustomerDTO customerDTO) {
+        return customerService.createCustomer(customerDTO);
     }
 
     @GetMapping
-    public List<SupplierDTO> getAllCustomers() {
-        return supplierService.getAllSuppliers();
+    public List<CustomerDTO> getAllCustomers() {
+        return customerService.getAllCustomers();
     }
 
     @GetMapping("/{id}")
-    public SupplierDTO getCustomer(@PathVariable UUID id) {
-        return supplierService.getSupplierById(id);
+    public CustomerDTO getCustomer(@PathVariable UUID id) {
+        return customerService.getCustomerById(id);
     }
 
     @PutMapping("/{id}/reset-password")
     public boolean resetPassword(@PathVariable UUID id, @RequestParam String currentPassword, @RequestParam String newPassword) {
-        return supplierService.resetPassword(id, currentPassword, newPassword);
+        return customerService.resetPassword(id, currentPassword, newPassword);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SupplierDTO> updateCustomer(@PathVariable UUID id, @RequestBody SupplierDTO supplierDTO) {
-        SupplierDTO updatedSupplier = supplierService.updateSupplier(id, supplierDTO);
-        if (updatedSupplier != null) {
-            return ResponseEntity.ok(updatedSupplier);
+    public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable UUID id, @RequestBody CustomerDTO customerDTO) {
+        CustomerDTO updateCustomer = customerService.updateCustomer(id, customerDTO);
+        if (updateCustomer != null) {
+            return ResponseEntity.ok(updateCustomer);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -48,12 +51,18 @@ public class CustomerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable UUID id) {
-        boolean deleted = supplierService.deleteSupplier(id);
+        boolean deleted = customerService.deleteCustomer(id);
         if (deleted) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<String> authenticateCustomer(@RequestBody LoginDTO loginDTO) {
+        String token = customerService.authenticateSupplier(loginDTO);
+        return token != null ? ResponseEntity.ok(token) : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
 }

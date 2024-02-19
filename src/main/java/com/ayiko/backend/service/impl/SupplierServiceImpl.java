@@ -1,5 +1,7 @@
 package com.ayiko.backend.service.impl;
 
+import com.ayiko.backend.config.JWTTokenProvider;
+import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.repository.entity.SupplierEntity;
 import com.ayiko.backend.repository.SupplierRepository;
@@ -21,6 +23,8 @@ public class SupplierServiceImpl implements SupplierService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JWTTokenProvider tokenProvider;
 
     @Override
     public SupplierDTO createSupplier(SupplierDTO supplierDTO) {
@@ -67,6 +71,15 @@ public class SupplierServiceImpl implements SupplierService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String authenticateSupplier(LoginDTO loginDTO) {
+        SupplierEntity supplier = repository.findByEmailAddress(loginDTO.getUsername()).orElse(null);
+        if(supplier != null && passwordEncoder.matches(loginDTO.getPassword(), supplier.getPassword())) {
+            return tokenProvider.generateToken(supplier.getEmailAddress());
+        }
+        return null;
     }
 
 }

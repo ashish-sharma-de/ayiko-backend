@@ -1,10 +1,10 @@
 package com.ayiko.backend.controller;
 
+import com.ayiko.backend.config.JWTTokenProvider;
 import com.ayiko.backend.dto.ProductDTO;
 import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.service.ProductService;
 import com.ayiko.backend.service.SupplierService;
-import com.ayiko.backend.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,8 @@ public class ProductController {
     @Autowired
     private SupplierService supplierService;
 
-    private JWTUtil jwtUtil = new JWTUtil();
+    @Autowired
+    private JWTTokenProvider tokenProvider;
 
     @PostMapping
     public ProductDTO addProduct(@RequestBody ProductDTO productDTO, @RequestHeader("Authorization") String authorizationHeader) {
@@ -34,10 +35,10 @@ public class ProductController {
     private UUID validateToken(String authorizationHeader) {
         //TODO: Update logic if required to check if the token is valid
         String token = authorizationHeader.substring(7); // Assuming the header starts with "Bearer "
-        if(!jwtUtil.validateToken(token)) {
+        if(!tokenProvider.validateToken(token)) {
             throw new RuntimeException("Invalid token");
         }
-        String username = jwtUtil.getUsernameFromJWT(token);
+        String username = tokenProvider.getUsernameFromJWT(token);
         SupplierDTO supplierDTO = supplierService.getSupplierByEmail(username);
         if(supplierDTO == null || !supplierDTO.getEmailAddress().equals(username)) {
             throw new RuntimeException("Token userId doesn't match the supplierId in product");
@@ -70,7 +71,7 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/supplier/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
         validateToken(authorizationHeader);
         boolean deleted = productService.deleteProduct(id);

@@ -1,8 +1,11 @@
 package com.ayiko.backend.service.impl;
 
+import com.ayiko.backend.config.JWTTokenProvider;
 import com.ayiko.backend.dto.CustomerDTO;
+import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.repository.CustomerRepository;
 import com.ayiko.backend.repository.entity.CustomerEntity;
+import com.ayiko.backend.repository.entity.SupplierEntity;
 import com.ayiko.backend.service.CustomerService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JWTTokenProvider tokenProvider;
 
     @Override
     public CustomerDTO createCustomer(CustomerDTO CustomerDTO) {
@@ -68,6 +73,15 @@ public class CustomerServiceImpl implements CustomerService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String authenticateSupplier(LoginDTO loginDTO) {
+        CustomerEntity customer = repository.findByEmailAddress(loginDTO.getUsername()).orElse(null);
+        if(customer != null && passwordEncoder.matches(loginDTO.getPassword(), customer.getPassword())) {
+            return tokenProvider.generateToken(customer.getEmailAddress());
+        }
+        return null;
     }
 
 }

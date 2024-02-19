@@ -1,0 +1,11 @@
+com.ayiko.backend
+com.ayiko.backend.config
+com.ayiko.backend.controller
+com.ayiko.backend.dto
+com.ayiko.backend.filter
+com.ayiko.backend.repository
+com.ayiko.backend.repository.entity
+com.ayiko.backend.service
+com.ayiko.backend.service.impl
+com.ayiko.backend.util
+com.ayiko.backend.util.converter
