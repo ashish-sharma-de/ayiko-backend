@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SupplierRepository extends JpaRepository<SupplierEntity, UUID> {
     Optional<SupplierEntity> findByEmailAddress(String emailAddress);
+    List<SupplierEntity> findAllByEmailAddress(String emailAddress);
+
 
 }
 

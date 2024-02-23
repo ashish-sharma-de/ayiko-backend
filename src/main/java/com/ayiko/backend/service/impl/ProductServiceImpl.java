@@ -1,15 +1,14 @@
 package com.ayiko.backend.service.impl;
 
-import com.ayiko.backend.dto.CustomerDTO;
 import com.ayiko.backend.dto.ProductDTO;
-import com.ayiko.backend.repository.CustomerRepository;
 import com.ayiko.backend.repository.ProductRepository;
-import com.ayiko.backend.repository.entity.CustomerEntity;
+import com.ayiko.backend.repository.SupplierRepository;
 import com.ayiko.backend.repository.entity.ProductEntity;
+import com.ayiko.backend.repository.entity.SupplierEntity;
 import com.ayiko.backend.service.ProductService;
+import com.ayiko.backend.service.SupplierService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,21 +19,32 @@ import java.util.UUID;
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
-    private ProductRepository repository;
+    private ProductRepository productRepository;
+
+    @Autowired
+    private SupplierService supplierService;
+
+    @Autowired
+    private SupplierRepository supplierRepository;
 
     @Override
     public ProductDTO addProduct(ProductDTO productDTO) {
-        ProductEntity save = repository.save(EntityDTOConverter.convertProductDTOToEntity(productDTO));
+        SupplierEntity supplierEntity = supplierRepository.findById(productDTO.getSupplierId()).orElseThrow(() -> new RuntimeException("Supplier not found"));
+        ProductEntity productEntity = EntityDTOConverter.convertProductDTOToEntity(productDTO);
+        productEntity.setSupplier(supplierEntity);
+        ProductEntity save = productRepository.save(productEntity);
         return EntityDTOConverter.convertProductEntityToDTO(save);
     }
 
     @Override
     public ProductDTO updateProduct(UUID id, ProductDTO productDTO) {
-        Optional<ProductEntity> byId = repository.findById(id);
+        Optional<ProductEntity> byId = productRepository.findById(id);
         if (byId.isPresent()) {
+            SupplierEntity supplierEntity = supplierRepository.findById(productDTO.getSupplierId()).orElseThrow(() -> new RuntimeException("Supplier not found"));
             ProductEntity productEntity = EntityDTOConverter.convertProductDTOToEntity(productDTO);
+            productEntity.setSupplier(supplierEntity);
             productEntity.setId(byId.get().getId());
-            ProductEntity save = repository.save(productEntity);
+            ProductEntity save = productRepository.save(productEntity);
             return EntityDTOConverter.convertProductEntityToDTO(save);
         }
         return null;
@@ -42,8 +52,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public boolean deleteProduct(UUID id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
+        if (productRepository.existsById(id)) {
+            productRepository.deleteById(id);
             return true;
         }
         return false;
@@ -51,11 +61,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO getProductById(UUID id) {
-        return repository.findById(id).map(EntityDTOConverter::convertProductEntityToDTO).orElse(null);
+        return productRepository.findById(id).map(EntityDTOConverter::convertProductEntityToDTO).orElse(null);
     }
 
     @Override
     public List<ProductDTO> getAllProductsForSupplier(UUID supplierId) {
-        return repository.findBySupplierId(supplierId).stream().map(EntityDTOConverter::convertProductEntityToDTO).toList();
+        return productRepository.findBySupplierId(supplierId).stream().map(EntityDTOConverter::convertProductEntityToDTO).toList();
     }
 }

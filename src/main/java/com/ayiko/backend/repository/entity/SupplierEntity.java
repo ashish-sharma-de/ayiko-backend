@@ -1,5 +1,6 @@
 package com.ayiko.backend.repository.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,10 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -28,6 +27,7 @@ public class SupplierEntity {
     private String mobileMoneyNumber;
     private String bankAccountNumber;
     private String city;
+    @Column(unique = true)
     private String emailAddress;
     private String password; // Store hashed passwords only
     @CreatedDate
@@ -36,4 +36,6 @@ public class SupplierEntity {
     private LocalDate updatedAt;
     private LocalDate lastLoginAt;
 
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<ProductEntity> products;
 }

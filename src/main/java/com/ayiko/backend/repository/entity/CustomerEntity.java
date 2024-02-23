@@ -1,5 +1,6 @@
 package com.ayiko.backend.repository.entity;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class CustomerEntity {
     private UUID id;
     private String fullName;
     private String phoneNumber;
+    @Column(unique = true)
     private String emailAddress;
     private String password; // Store hashed passwords only
     @CreatedDate

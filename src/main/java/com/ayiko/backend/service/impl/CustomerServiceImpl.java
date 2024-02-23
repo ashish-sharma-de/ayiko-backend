@@ -84,4 +84,10 @@ public class CustomerServiceImpl implements CustomerService {
         return null;
     }
 
+    @Override
+    public CustomerDTO getCustomerByEmail(String email) {
+        return repository.findByEmailAddress(email).map(EntityDTOConverter::convertCustomerEntityToCustomerDTO).orElse(null);
+    }
+
+
 }

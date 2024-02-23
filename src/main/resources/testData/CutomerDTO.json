@@ -1,0 +1,23 @@
+[
+  {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "fullName": "John Doe",
+    "phoneNumber": "+1234567890",
+    "emailAddress": "johndoe@example.com",
+    "password": "hashed_password_1"
+  },
+  {
+    "id": "e4d909c2-00c3-83bf-b1f1-9473e90e6811",
+    "fullName": "Jane Smith",
+    "phoneNumber": "+0987654321",
+    "emailAddress": "janesmith@example.com",
+    "password": "hashed_password_2"
+  },
+  {
+    "id": "3f295667-573e-4f05-9cf2-0baf807fb3f1",
+    "fullName": "Alex Johnson",
+    "phoneNumber": "+1122334455",
+    "emailAddress": "alexjohnson@example.com",
+    "password": "hashed_password_3"
+  }
+]

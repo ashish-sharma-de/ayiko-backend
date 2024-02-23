@@ -11,7 +11,7 @@ public class EntityDTOConverter {
 
     public static CustomerEntity convertCustomerDTOToCustomerEntity(CustomerDTO dto) {
         return CustomerEntity.builder()
-                .id(dto.getId())
+                //.id(dto.getId())
                 .emailAddress(dto.getEmailAddress())
                 .phoneNumber(dto.getPhoneNumber())
                 .password(dto.getPassword())
@@ -65,7 +65,6 @@ public class EntityDTOConverter {
                 .quantity(productDTO.getQuantity())
                 .imageUrl(productDTO.getImageUrl())
                 .category(productDTO.getCategory())
-                .supplierId(productDTO.getSupplierId())
                 .isAvailable(productDTO.isAvailable())
                 .build();
     }
@@ -79,7 +78,7 @@ public class EntityDTOConverter {
                 .quantity(entity.getQuantity())
                 .imageUrl(entity.getImageUrl())
                 .category(entity.getCategory())
-                .supplierId(entity.getSupplierId())
+                .supplierId(entity.getSupplier().getId())
                 .isAvailable(entity.isAvailable())
                 .build();
     }

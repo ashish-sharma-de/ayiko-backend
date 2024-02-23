@@ -6,7 +6,6 @@ import java.util.UUID;
 
 public interface SupplierService {
     SupplierDTO createSupplier(SupplierDTO supplierDTO);
-
     SupplierDTO updateSupplier(UUID id, SupplierDTO supplierDTO);
     boolean deleteSupplier(UUID id);
     SupplierDTO getSupplierById(UUID id);

@@ -76,7 +76,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public String authenticateSupplier(LoginDTO loginDTO) {
         SupplierEntity supplier = repository.findByEmailAddress(loginDTO.getUsername()).orElse(null);
-        if(supplier != null && passwordEncoder.matches(loginDTO.getPassword(), supplier.getPassword())) {
+        if (supplier != null && passwordEncoder.matches(loginDTO.getPassword(), supplier.getPassword())) {
             return tokenProvider.generateToken(supplier.getEmailAddress());
         }
         return null;

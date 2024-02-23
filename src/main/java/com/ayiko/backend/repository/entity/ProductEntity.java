@@ -1,6 +1,6 @@
 package com.ayiko.backend.repository.entity;
 
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -25,7 +23,6 @@ public class ProductEntity {
     private String name;
     private String description;
     private String category;
-    private UUID supplierId;
     private String unitPrice;
     private String quantity;
     private String imageUrl;
@@ -34,5 +31,9 @@ public class ProductEntity {
     private LocalDate createdAt;
     @LastModifiedDate
     private LocalDate updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    private SupplierEntity supplier;
 
 }
