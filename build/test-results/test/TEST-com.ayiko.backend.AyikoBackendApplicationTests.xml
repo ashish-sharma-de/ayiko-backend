@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.ayiko.backend.AyikoBackendApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-02-23T21:10:58" hostname="Ashish.local" time="0.006">
+<testsuite name="com.ayiko.backend.AyikoBackendApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-02-24T10:49:08" hostname="Ashish.local" time="0.006">
   <properties/>
   <testcase name="contextLoads()" classname="com.ayiko.backend.AyikoBackendApplicationTests" time="0.006"/>
   <system-out><![CDATA[]]></system-out>
