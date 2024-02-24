@@ -1,11 +1,10 @@
 package com.ayiko.backend.util.converter;
 
-import com.ayiko.backend.dto.CustomerDTO;
-import com.ayiko.backend.dto.ProductDTO;
-import com.ayiko.backend.dto.SupplierDTO;
-import com.ayiko.backend.repository.entity.CustomerEntity;
-import com.ayiko.backend.repository.entity.ProductEntity;
-import com.ayiko.backend.repository.entity.SupplierEntity;
+import com.ayiko.backend.dto.*;
+import com.ayiko.backend.repository.entity.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EntityDTOConverter {
 
@@ -28,8 +27,9 @@ public class EntityDTOConverter {
                 .fullName(entity.getFullName())
                 .build();
     }
+
     public static SupplierEntity convertSupplierDTOToSupplierEntity(SupplierDTO supplierDTO) {
-        return  SupplierEntity.builder()
+        return SupplierEntity.builder()
                 .id(supplierDTO.getId())
                 .bankAccountNumber(supplierDTO.getBankAccountNumber())
                 .companyName(supplierDTO.getCompanyName())
@@ -43,7 +43,7 @@ public class EntityDTOConverter {
     }
 
     public static SupplierDTO convertSupplierEntityToSupplierDTO(SupplierEntity dto) {
-        return  SupplierDTO.builder()
+        return SupplierDTO.builder()
                 .id(dto.getId())
                 .bankAccountNumber(dto.getBankAccountNumber())
                 .companyName(dto.getCompanyName())
@@ -80,6 +80,42 @@ public class EntityDTOConverter {
                 .category(entity.getCategory())
                 .supplierId(entity.getSupplier().getId())
                 .isAvailable(entity.isAvailable())
+                .build();
+    }
+
+    public static CartDTO convertCartEntityToCartDTO(CartEntity entity) {
+        List<CartItemDTO> items = entity.getItems().stream().map(item -> convertCartItemEntityToDTO(item)).collect(Collectors.toList());
+        return CartDTO.builder()
+                .id(entity.getId())
+                .customerId(entity.getCustomerId())
+                .supplierId(entity.getSupplierId())
+                .items(items)
+                .build();
+    }
+
+    public static CartItemDTO convertCartItemEntityToDTO(CartItemEntity itemEntity) {
+        return CartItemDTO.builder()
+                .id(itemEntity.getId())
+                .productId(itemEntity.getProductId())
+                .quantity(itemEntity.getQuantity())
+                .build();
+    }
+
+    public static CartEntity convertCartDTOToEntity(CartDTO dto) {
+        List<CartItemEntity> items = dto.getItems().stream().map(item -> convertCartItemDTOToEntity(item)).collect(Collectors.toList());
+        return CartEntity.builder()
+                .id(dto.getId())
+                .customerId(dto.getCustomerId())
+                .supplierId(dto.getSupplierId())
+                .items(items)
+                .build();
+    }
+
+    public static CartItemEntity convertCartItemDTOToEntity(CartItemDTO itemDTO) {
+        return CartItemEntity.builder()
+                .id(itemDTO.getId())
+                .productId(itemDTO.getProductId())
+                .quantity(itemDTO.getQuantity())
                 .build();
     }
 }

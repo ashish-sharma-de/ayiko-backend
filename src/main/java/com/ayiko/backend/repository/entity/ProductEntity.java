@@ -36,4 +36,15 @@ public class ProductEntity {
     @JoinColumn(name = "supplier_id")
     private SupplierEntity supplier;
 
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDate.now();
+        updatedAt = LocalDate.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDate.now();
+    }
+
 }
