@@ -2,9 +2,12 @@ package com.ayiko.backend.controller;
 
 import com.ayiko.backend.config.JWTTokenProvider;
 import com.ayiko.backend.dto.CartDTO;
+import com.ayiko.backend.dto.CartStatus;
 import com.ayiko.backend.dto.CustomerDTO;
+import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.service.CartService;
 import com.ayiko.backend.service.CustomerService;
+import com.ayiko.backend.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -23,6 +26,9 @@ public class CartController {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private SupplierService supplierService;
     @Autowired
     private JWTTokenProvider tokenProvider;
     private final String ERROR_INVALID_TOKEN = "Token invalid, valid token required to access this API";
@@ -35,23 +41,39 @@ public class CartController {
         try {
             UUID customerId = getCustomerIdFromToken(authorizationHeader);
             cartDTO.setCustomerId(customerId);
+            cartDTO.setStatus(CartStatus.PENDING);
             return ResponseEntity.ok(cartService.saveCart(cartDTO));
         } catch (Exception e) {
             return handleException(e);
         }
     }
 
-    private UUID getCustomerIdFromToken(String authorizationHeader) {
+    private String validateToken(String authorizationHeader) {
         String token = authorizationHeader.substring(7); // Assuming the header starts with "Bearer "
         if (!tokenProvider.validateToken(token)) {
             throw new RuntimeException(ERROR_INVALID_TOKEN);
         }
+        return token;
+    }
+
+    private UUID getCustomerIdFromToken(String authorizationHeader) {
+        String token = validateToken(authorizationHeader);
         String username = tokenProvider.getUsernameFromJWT(token);
         CustomerDTO customerDTO = customerService.getCustomerByEmail(username);
         if (customerDTO == null || !customerDTO.getEmailAddress().equals(username)) {
             throw new RuntimeException(ERROR_INVALID_SUPPLIER_ID);
         }
         return customerDTO.getId();
+    }
+
+    private UUID getSupplierIdFromToken(String authorizationHeader) {
+        String token = validateToken(authorizationHeader);
+        String username = tokenProvider.getUsernameFromJWT(token);
+        SupplierDTO supplierDTO = supplierService.getSupplierByEmail(username);
+        if (supplierDTO == null || !supplierDTO.getEmailAddress().equals(username)) {
+            throw new RuntimeException(ERROR_INVALID_SUPPLIER_ID);
+        }
+        return supplierDTO.getId();
     }
 
     @GetMapping("/{id}")
@@ -70,24 +92,41 @@ public class CartController {
 
     @GetMapping("/{id}/sendForApproval")
     public ResponseEntity sendForApproval(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
-        //TODO: Implement this
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/{supplierId}/supplier")
-    public ResponseEntity<List<CartDTO>> getCartsForSupplier(@PathVariable UUID supplierId, @RequestHeader("Authorization") String authorizationHeader) {
         try {
-            return ResponseEntity.ok(cartService.getCartsBySupplierId(supplierId));
-        }catch (Exception e) {
+            getCustomerIdFromToken(authorizationHeader);
+            cartService.sendForApproval(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
             return handleException(e);
         }
     }
 
-    @GetMapping("/{customerId}/customer")
-    public ResponseEntity<List<CartDTO>> getCartsForCustomer(@PathVariable UUID customerId, @RequestHeader("Authorization") String authorizationHeader) {
+    @GetMapping("/{id}/acceptCart")
+    public ResponseEntity acceptCart(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
         try {
-            return ResponseEntity.ok(cartService.getCartsByCustomerId(customerId));
-        }catch (Exception e) {
+            UUID tokenSupplierId = getSupplierIdFromToken(authorizationHeader);
+            CartDTO cart = cartService.getCartById(id);
+            if (cart.getSupplierId() != tokenSupplierId) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to accept this cart")).build();
+            }
+            cartService.acceptCart(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
+    @GetMapping("/{id}/rejectCart")
+    public ResponseEntity rejectCart(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            UUID tokenSupplierId = getSupplierIdFromToken(authorizationHeader);
+            CartDTO cart = cartService.getCartById(id);
+            if (cart.getSupplierId() != tokenSupplierId) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to accept this cart")).build();
+            }
+            cartService.rejectCart(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
             return handleException(e);
         }
     }

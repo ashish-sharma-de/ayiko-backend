@@ -1,6 +1,7 @@
 package com.ayiko.backend.service.impl;
 
 import com.ayiko.backend.dto.CartDTO;
+import com.ayiko.backend.dto.CartStatus;
 import com.ayiko.backend.repository.CartRepository;
 import com.ayiko.backend.repository.entity.CartEntity;
 import com.ayiko.backend.service.CartService;
@@ -8,6 +9,7 @@ import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,13 +52,49 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<CartDTO> getCartsByCustomerId(UUID customerId) {
+    public List<CartDTO> getCartsByCustomerId(UUID customerId, CartStatus status) {
+        if (status != null) {
+            return cartRepository.findAllByCustomerIdAndStatus(customerId, status).stream().map(EntityDTOConverter::convertCartEntityToCartDTO).toList();
+        }
         return cartRepository.findAllByCustomerId(customerId).stream().map(EntityDTOConverter::convertCartEntityToCartDTO).toList();
     }
 
     @Override
-    public List<CartDTO> getCartsBySupplierId(UUID customerId) {
+    public List<CartDTO> getCartsBySupplierId(UUID customerId, CartStatus status) {
+        if (status != null) {
+            return cartRepository.findAllBySupplierIdAndStatus(customerId, status).stream().map(EntityDTOConverter::convertCartEntityToCartDTO).toList();
+        }
         return cartRepository.findAllBySupplierId(customerId).stream().map(EntityDTOConverter::convertCartEntityToCartDTO).toList();
+    }
+
+    @Override
+    public void sendForApproval(UUID id) {
+        CartEntity cartEntity = cartRepository.findById(id).orElse(null);
+        if (cartEntity == null) {
+            throw new RuntimeException("Invalid Cart ID");
+        }
+        cartEntity.setStatus(CartStatus.SENT_FOR_APPROVAL);
+        cartRepository.save(cartEntity);
+    }
+
+    @Override
+    public void acceptCart(UUID id) {
+        CartEntity cartEntity = cartRepository.findById(id).orElse(null);
+        if (cartEntity == null) {
+            throw new RuntimeException("Invalid Cart ID");
+        }
+        cartEntity.setStatus(CartStatus.ACCEPTED);
+        cartRepository.save(cartEntity);
+    }
+
+    @Override
+    public void rejectCart(UUID id) {
+        CartEntity cartEntity = cartRepository.findById(id).orElse(null);
+        if (cartEntity == null) {
+            throw new RuntimeException("Invalid Cart ID");
+        }
+        cartEntity.setStatus(CartStatus.REJECTED);
+        cartRepository.save(cartEntity);
     }
 
 }

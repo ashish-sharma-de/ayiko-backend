@@ -1,6 +1,7 @@
 package com.ayiko.backend.service;
 
 import com.ayiko.backend.dto.CartDTO;
+import com.ayiko.backend.dto.CartStatus;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,7 +15,13 @@ public interface CartService {
 
     boolean deleteCart(UUID cartId);
 
-    List<CartDTO> getCartsByCustomerId(UUID customerId);
+    List<CartDTO> getCartsByCustomerId(UUID customerId, CartStatus status);
 
-    List<CartDTO> getCartsBySupplierId(UUID customerId);
+    List<CartDTO> getCartsBySupplierId(UUID customerId, CartStatus status);
+
+    void sendForApproval(UUID cartId);
+
+    void acceptCart(UUID id);
+
+    void rejectCart(UUID id);
 }

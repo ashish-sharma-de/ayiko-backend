@@ -1,7 +1,11 @@
 package com.ayiko.backend.controller;
 
+import com.ayiko.backend.config.JWTTokenProvider;
+import com.ayiko.backend.dto.CartDTO;
+import com.ayiko.backend.dto.CartStatus;
 import com.ayiko.backend.dto.CustomerDTO;
 import com.ayiko.backend.dto.LoginDTO;
+import com.ayiko.backend.service.CartService;
 import com.ayiko.backend.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +27,13 @@ public class CustomerController {
     private final String ERROR_INVALID_ID = "Specified customer id is invalid";
 
     @Autowired
+    private JWTTokenProvider tokenProvider;
+
+    @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private CartService cartService;
 
     @PostMapping
     public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO customerDTO) {
@@ -88,6 +97,47 @@ public class CustomerController {
         String token = customerService.authenticateSupplier(loginDTO);
         return token != null ? ResponseEntity.ok(token) : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
+
+    @GetMapping("/{customerId}/carts")
+    public ResponseEntity<List<CartDTO>> getCartsForSupplier(@PathVariable UUID customerId, @RequestHeader("Authorization") String authorizationHeader, @RequestParam(name = "status") CartStatus status) {
+        try {
+            UUID customerById = getCustomerIdFromToken(authorizationHeader);
+            if (!customerById.equals(customerId)) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to access this resource")).build();
+            }
+            return ResponseEntity.ok(cartService.getCartsByCustomerId(customerId, status));
+
+
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
+    private ResponseEntity handleException(Exception e){
+        if (e instanceof RuntimeException && (e.getMessage().equals(ERROR_INVALID_TOKEN) || e.getMessage().equals(ERROR_INVALID_ID))) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage())).build();
+        }
+        return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage())).build();
+    }
+
+    private UUID getCustomerIdFromToken(String authorizationHeader) {
+        String token = validateToken(authorizationHeader);
+        String username = tokenProvider.getUsernameFromJWT(token);
+        CustomerDTO customerDTO = customerService.getCustomerByEmail(username);
+        if (customerDTO == null || !customerDTO.getEmailAddress().equals(username)) {
+            throw new RuntimeException(ERROR_INVALID_TOKEN);
+        }
+        return customerDTO.getId();
+    }
+
+    private String validateToken(String authorizationHeader) {
+        String token = authorizationHeader.substring(7); // Assuming the header starts with "Bearer "
+        if (!tokenProvider.validateToken(token)) {
+            throw new RuntimeException(ERROR_INVALID_TOKEN);
+        }
+        return token;
+    }
+
 
 }
 

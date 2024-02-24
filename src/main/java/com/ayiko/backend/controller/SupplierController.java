@@ -1,8 +1,11 @@
 package com.ayiko.backend.controller;
 
 import com.ayiko.backend.config.JWTTokenProvider;
+import com.ayiko.backend.dto.CartDTO;
+import com.ayiko.backend.dto.CartStatus;
 import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.dto.SupplierDTO;
+import com.ayiko.backend.service.CartService;
 import com.ayiko.backend.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,8 @@ public class SupplierController {
 
     @Autowired
     private SupplierService supplierService;
+    @Autowired
+    private CartService cartService;
 
     @Autowired
     private JWTTokenProvider tokenProvider;
@@ -39,17 +44,18 @@ public class SupplierController {
     @GetMapping
     public ResponseEntity<List<SupplierDTO>> getAllSuppliers(@RequestHeader("Authorization") String authorizationHeader) {
         //TODO: Sort the suppliers by location
-        if (!validateToken(authorizationHeader)) {
+        if (validateToken(authorizationHeader) == null) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ERROR_INVALID_TOKEN)).build();
         }
         return ResponseEntity.ok(supplierService.getAllSuppliers());
     }
 
-    private boolean validateToken(String authorizationHeader) {
-        if (tokenProvider.validateToken(authorizationHeader.substring(7))) {
-            return true;
+    private String validateToken(String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        if (tokenProvider.validateToken(token)) {
+            return token;
         }
-        return false;
+        return null;
     }
 
     @GetMapping("/{id}")
@@ -100,6 +106,40 @@ public class SupplierController {
         }
         String token = supplierService.authenticateSupplier(loginDTO);
         return token != null ? ResponseEntity.ok(token) : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    private UUID getSupplierIdFromToken(String token) {
+        String username = tokenProvider.getUsernameFromJWT(token);
+        SupplierDTO supplierDTO = supplierService.getSupplierByEmail(username);
+        if (supplierDTO == null || !supplierDTO.getEmailAddress().equals(username)) {
+            throw new RuntimeException(ERROR_INVALID_EMAIL);
+        }
+        return supplierDTO.getId();
+    }
+
+    @GetMapping("/{supplierId}/carts")
+    public ResponseEntity<List<CartDTO>> getCartsForSupplier(@PathVariable UUID supplierId, @RequestHeader("Authorization") String authorizationHeader, @RequestParam(name = "status") CartStatus status) {
+        try {
+            String token = validateToken(authorizationHeader);
+            if (token == null) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ERROR_INVALID_TOKEN)).build();
+            }
+            UUID supplierIdFromToken = getSupplierIdFromToken(token);
+            if (!supplierIdFromToken.equals(supplierId)) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to access this resource")).build();
+            }
+            return ResponseEntity.ok(cartService.getCartsBySupplierId(supplierId, status));
+
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
+    private ResponseEntity handleException(Exception e) {
+        if (e instanceof RuntimeException && (e.getMessage().equals(ERROR_INVALID_TOKEN) || e.getMessage().equals(ERROR_INVALID_ID))) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage())).build();
+        }
+        return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage())).build();
     }
 }
 

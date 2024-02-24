@@ -17,4 +17,5 @@ public class CartDTO {
     private UUID supplierId;
     private UUID customerId;
     private List<CartItemDTO> items;
+    private CartStatus status;
 }
