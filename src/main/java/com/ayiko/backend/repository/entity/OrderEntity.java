@@ -27,7 +27,8 @@ public class OrderEntity {
     private LocalDate createdAt;
     private LocalDate updatedAt;
 
-    private DriverEntity driver;
+//TODO: Add driver entity
+//    private DriverEntity driver;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private OrderPaymentEntity paymentDetails;
