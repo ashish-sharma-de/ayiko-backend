@@ -1,4 +1,4 @@
-package com.ayiko.backend.dto;
+package com.ayiko.backend.dto.cart;
 
 public enum CartStatus {
     SENT_FOR_APPROVAL,

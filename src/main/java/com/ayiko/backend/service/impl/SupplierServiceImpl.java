@@ -35,7 +35,17 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public SupplierDTO updateSupplier(UUID id, SupplierDTO supplierDTO) {
-        return null;
+        repository.findById(id).ifPresent(supplierEntity -> {
+            supplierEntity.setBankAccountNumber(supplierDTO.getBankAccountNumber());
+            supplierEntity.setCity(supplierDTO.getCity());
+            supplierEntity.setCompanyName(supplierDTO.getCompanyName());
+            supplierEntity.setEmailAddress(supplierDTO.getEmailAddress());
+            supplierEntity.setMobileMoneyNumber(supplierDTO.getMobileMoneyNumber());
+            supplierEntity.setOwnerName(supplierDTO.getOwnerName());
+            supplierEntity.setPhoneNumber(supplierDTO.getPhoneNumber());
+            repository.save(supplierEntity);
+        });
+        return supplierDTO;
     }
 
     @Override

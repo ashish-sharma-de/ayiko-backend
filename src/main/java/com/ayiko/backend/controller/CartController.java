@@ -1,10 +1,11 @@
 package com.ayiko.backend.controller;
 
 import com.ayiko.backend.config.JWTTokenProvider;
-import com.ayiko.backend.dto.CartDTO;
-import com.ayiko.backend.dto.CartStatus;
-import com.ayiko.backend.dto.CustomerDTO;
-import com.ayiko.backend.dto.SupplierDTO;
+import com.ayiko.backend.dto.*;
+import com.ayiko.backend.dto.cart.CartDTO;
+import com.ayiko.backend.dto.cart.CartPaymentConfirmationStatus;
+import com.ayiko.backend.dto.cart.CartPaymentReceiptStatus;
+import com.ayiko.backend.dto.cart.CartStatus;
 import com.ayiko.backend.service.CartService;
 import com.ayiko.backend.service.CustomerService;
 import com.ayiko.backend.service.SupplierService;
@@ -14,7 +15,6 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -101,7 +101,7 @@ public class CartController {
         }
     }
 
-    @GetMapping("/{id}/acceptCart")
+    @PostMapping("/{id}/acceptCart")
     public ResponseEntity acceptCart(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
         try {
             UUID tokenSupplierId = getSupplierIdFromToken(authorizationHeader);
@@ -116,7 +116,7 @@ public class CartController {
         }
     }
 
-    @GetMapping("/{id}/rejectCart")
+    @PostMapping("/{id}/rejectCart")
     public ResponseEntity rejectCart(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
         try {
             UUID tokenSupplierId = getSupplierIdFromToken(authorizationHeader);
@@ -130,6 +130,39 @@ public class CartController {
             return handleException(e);
         }
     }
+
+    @GetMapping("/{id}/addPaymentConfirmationStatus")
+    public ResponseEntity addPaymentConfirmationStatus(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader, @RequestParam("status") CartPaymentConfirmationStatus status) {
+        try {
+            UUID tokenCustomerId = getCustomerIdFromToken(authorizationHeader);
+            CartDTO cart = cartService.getCartById(id);
+            if (!cart.getCustomerId().equals(tokenCustomerId)) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to accept this cart")).build();
+            }
+            cartService.updateCartPaymentConfirmationStatus(id, status);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
+    @GetMapping("/{id}/addPaymentReceiptStatus")
+    public ResponseEntity addPaymentReceiptStatus(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader, @RequestParam("status") CartPaymentReceiptStatus status) {
+        try {
+            UUID tokenSupplier = getSupplierIdFromToken(authorizationHeader);
+            CartDTO cart = cartService.getCartById(id);
+            if (!cart.getSupplierId().equals(tokenSupplier)) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to accept this cart")).build();
+            }
+            cartService.updateCartPaymentReceiptStatus(id, status);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
+    //TODO: Implement the following methods
+    // @GetMapping("/{customerId}/addItem")
 
     @PutMapping("/{id}")
     public ResponseEntity<CartDTO> updateCart(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader, @RequestBody CartDTO cartDTO) {

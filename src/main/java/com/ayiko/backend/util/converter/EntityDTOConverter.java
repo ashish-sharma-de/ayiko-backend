@@ -1,6 +1,8 @@
 package com.ayiko.backend.util.converter;
 
 import com.ayiko.backend.dto.*;
+import com.ayiko.backend.dto.cart.CartDTO;
+import com.ayiko.backend.dto.cart.CartItemDTO;
 import com.ayiko.backend.repository.entity.*;
 
 import java.util.List;
@@ -118,4 +120,23 @@ public class EntityDTOConverter {
                 .quantity(itemDTO.getQuantity())
                 .build();
     }
+
+    public static DriverEntity convertDriverDTOToEntity(DriverDTO driverDTO) {
+        return DriverEntity.builder()
+                .id(driverDTO.getId())
+                .email(driverDTO.getEmail())
+                .password(driverDTO.getPassword())
+                .phone(driverDTO.getPhone())
+                .build();
+    }
+
+    public static DriverDTO convertDriverEntityToDTO(DriverEntity entity) {
+        return DriverDTO.builder()
+                .id(entity.getId())
+                .email(entity.getEmail())
+                .password(entity.getPassword())
+                .phone(entity.getPhone())
+                .build();
+    }
+
 }

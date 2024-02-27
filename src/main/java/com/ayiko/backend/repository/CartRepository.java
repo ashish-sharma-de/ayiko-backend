@@ -1,6 +1,6 @@
 package com.ayiko.backend.repository;
 
-import com.ayiko.backend.dto.CartStatus;
+import com.ayiko.backend.dto.cart.CartStatus;
 import com.ayiko.backend.repository.entity.CartEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 

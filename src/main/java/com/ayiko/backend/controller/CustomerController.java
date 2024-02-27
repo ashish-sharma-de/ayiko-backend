@@ -1,8 +1,8 @@
 package com.ayiko.backend.controller;
 
 import com.ayiko.backend.config.JWTTokenProvider;
-import com.ayiko.backend.dto.CartDTO;
-import com.ayiko.backend.dto.CartStatus;
+import com.ayiko.backend.dto.cart.CartDTO;
+import com.ayiko.backend.dto.cart.CartStatus;
 import com.ayiko.backend.dto.CustomerDTO;
 import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.service.CartService;
@@ -47,6 +47,12 @@ public class CustomerController {
     @GetMapping
     public List<CustomerDTO> getAllCustomers() {
         return customerService.getAllCustomers();
+    }
+
+    @GetMapping("/getByToken")
+    public CustomerDTO getCustomerByToken(@RequestHeader("Authorization") String authorizationHeader) {
+        UUID customerIdFromToken = getCustomerIdFromToken(authorizationHeader);
+        return customerService.getCustomerById(customerIdFromToken);
     }
 
     @GetMapping("/{id}")

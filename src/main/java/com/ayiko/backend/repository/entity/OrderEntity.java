@@ -1,6 +1,6 @@
 package com.ayiko.backend.repository.entity;
 
-import com.ayiko.backend.dto.cart.CartStatus;
+import com.ayiko.backend.dto.order.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,22 +16,24 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartEntity {
+public class OrderEntity {
     @Id
     @GeneratedValue
     private UUID id;
     private UUID supplierId;
     private UUID customerId;
 
-    private CartStatus status;
+    private OrderStatus status;
     private LocalDate createdAt;
     private LocalDate updatedAt;
 
-    @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private CartPaymentEntity paymentDetails;
+    private DriverEntity driver;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<CartItemEntity> items;
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private OrderPaymentEntity paymentDetails;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<OrderItemEntity> items;
 
     @PrePersist
     protected void onCreate() {

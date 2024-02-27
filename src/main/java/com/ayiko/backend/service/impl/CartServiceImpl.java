@@ -1,9 +1,12 @@
 package com.ayiko.backend.service.impl;
 
-import com.ayiko.backend.dto.CartDTO;
-import com.ayiko.backend.dto.CartStatus;
+import com.ayiko.backend.dto.cart.CartDTO;
+import com.ayiko.backend.dto.cart.CartPaymentConfirmationStatus;
+import com.ayiko.backend.dto.cart.CartPaymentReceiptStatus;
+import com.ayiko.backend.dto.cart.CartStatus;
 import com.ayiko.backend.repository.CartRepository;
 import com.ayiko.backend.repository.entity.CartEntity;
+import com.ayiko.backend.repository.entity.CartPaymentEntity;
 import com.ayiko.backend.service.CartService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,5 +99,40 @@ public class CartServiceImpl implements CartService {
         cartEntity.setStatus(CartStatus.REJECTED);
         cartRepository.save(cartEntity);
     }
+
+    @Override
+    public void updateCartPaymentConfirmationStatus(UUID id, CartPaymentConfirmationStatus status) {
+        CartEntity cartEntity = cartRepository.findById(id).orElse(null);
+        if (cartEntity == null) {
+            throw new RuntimeException("Invalid Cart ID");
+        }
+        CartPaymentEntity paymentDetails = cartEntity.getPaymentDetails();
+        if (paymentDetails == null) {
+            paymentDetails = CartPaymentEntity.builder().build();
+        }
+        paymentDetails.setConfirmationStatus(status);
+        paymentDetails.setConfirmationDate(LocalDate.now());
+
+        cartEntity.setPaymentDetails(paymentDetails);
+        cartRepository.save(cartEntity);
+    }
+
+    @Override
+    public void updateCartPaymentReceiptStatus(UUID id, CartPaymentReceiptStatus status) {
+        CartEntity cartEntity = cartRepository.findById(id).orElse(null);
+        if (cartEntity == null) {
+            throw new RuntimeException("Invalid Cart ID");
+        }
+        CartPaymentEntity paymentDetails = cartEntity.getPaymentDetails();
+        if (paymentDetails == null) {
+            paymentDetails = CartPaymentEntity.builder().build();
+        }
+        paymentDetails.setReceiptStatus(status);
+        paymentDetails.setReceiptDate(LocalDate.now());
+
+        cartEntity.setPaymentDetails(paymentDetails);
+        cartRepository.save(cartEntity);
+    }
+
 
 }

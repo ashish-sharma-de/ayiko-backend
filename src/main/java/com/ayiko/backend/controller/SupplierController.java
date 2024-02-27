@@ -1,8 +1,9 @@
 package com.ayiko.backend.controller;
 
 import com.ayiko.backend.config.JWTTokenProvider;
-import com.ayiko.backend.dto.CartDTO;
-import com.ayiko.backend.dto.CartStatus;
+import com.ayiko.backend.dto.CustomerDTO;
+import com.ayiko.backend.dto.cart.CartDTO;
+import com.ayiko.backend.dto.cart.CartStatus;
 import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.service.CartService;
@@ -133,6 +134,12 @@ public class SupplierController {
         } catch (Exception e) {
             return handleException(e);
         }
+    }
+
+    @GetMapping("/getByToken")
+    public SupplierDTO getSupplierByToken(@RequestHeader("Authorization") String authorizationHeader) {
+        UUID customerIdFromToken = getSupplierIdFromToken(authorizationHeader);
+        return supplierService.getSupplierById(customerIdFromToken);
     }
 
     private ResponseEntity handleException(Exception e) {
