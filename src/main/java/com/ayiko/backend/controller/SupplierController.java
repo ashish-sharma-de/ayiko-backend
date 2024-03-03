@@ -2,11 +2,13 @@ package com.ayiko.backend.controller;
 
 import com.ayiko.backend.config.JWTTokenProvider;
 import com.ayiko.backend.dto.CustomerDTO;
+import com.ayiko.backend.dto.ProductDTO;
 import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartStatus;
 import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.service.CartService;
+import com.ayiko.backend.service.ProductService;
 import com.ayiko.backend.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +27,8 @@ public class SupplierController {
     private SupplierService supplierService;
     @Autowired
     private CartService cartService;
-
+    @Autowired
+    private ProductService productService;
     @Autowired
     private JWTTokenProvider tokenProvider;
     private final String ERROR_INVALID_TOKEN = "Token is empty or invalid, valid token required to access this API";
@@ -136,10 +139,24 @@ public class SupplierController {
         }
     }
 
+    @GetMapping("{id}/products")
+    public ResponseEntity<List<ProductDTO>> getAllProductsForSupplier(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            String token = validateToken(authorizationHeader);
+            if (token == null) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ERROR_INVALID_TOKEN)).build();
+            }
+            return ResponseEntity.ok(productService.getAllProductsForSupplier(id));
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
     @GetMapping("/getByToken")
     public SupplierDTO getSupplierByToken(@RequestHeader("Authorization") String authorizationHeader) {
-        UUID customerIdFromToken = getSupplierIdFromToken(authorizationHeader);
-        return supplierService.getSupplierById(customerIdFromToken);
+        String token = validateToken(authorizationHeader);
+        UUID supplierIdFromToken = getSupplierIdFromToken(token);
+        return supplierService.getSupplierById(supplierIdFromToken);
     }
 
     private ResponseEntity handleException(Exception e) {

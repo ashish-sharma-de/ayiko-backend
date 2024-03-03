@@ -2,6 +2,8 @@ package com.ayiko.backend.dto;
 
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -16,4 +18,9 @@ public class SupplierDTO {
     private String city;
     private String emailAddress;
     private String password; // Note: handle the password securely, consider not exposing in DTO
+
+    private String profileImageUrl;
+    private List<String> businessImages;
+    private String businessName;
+    private String businessDescription;
 }

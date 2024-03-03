@@ -5,10 +5,20 @@ import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartItemDTO;
 import com.ayiko.backend.repository.entity.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class EntityDTOConverter {
+
+    private static String LIMITER = "#@";
+    public static String imageUrlsToString(List<String> imageUrls) {
+        return String.join(LIMITER, imageUrls);
+    }
+
+    public static List<String> imageStringToList(String imageUrl) {
+        return Arrays.asList(imageUrl.split(LIMITER));
+    }
 
     public static CustomerEntity convertCustomerDTOToCustomerEntity(CustomerDTO dto) {
         return CustomerEntity.builder()
@@ -41,20 +51,28 @@ public class EntityDTOConverter {
                 .mobileMoneyNumber(supplierDTO.getMobileMoneyNumber())
                 .city(supplierDTO.getCity())
                 .phoneNumber(supplierDTO.getPhoneNumber())
+                .businessImages(imageUrlsToString(supplierDTO.getBusinessImages()))
+                .profileImageUrl(supplierDTO.getProfileImageUrl())
+                .businessName(supplierDTO.getBusinessName())
+                .businessDescription(supplierDTO.getBusinessDescription())
                 .build();
     }
 
-    public static SupplierDTO convertSupplierEntityToSupplierDTO(SupplierEntity dto) {
+    public static SupplierDTO convertSupplierEntityToSupplierDTO(SupplierEntity supplierEntity) {
         return SupplierDTO.builder()
-                .id(dto.getId())
-                .bankAccountNumber(dto.getBankAccountNumber())
-                .companyName(dto.getCompanyName())
-                .emailAddress(dto.getEmailAddress())
-                .ownerName(dto.getOwnerName())
-                .password(dto.getPassword())
-                .mobileMoneyNumber(dto.getMobileMoneyNumber())
-                .city(dto.getCity())
-                .phoneNumber(dto.getPhoneNumber())
+                .id(supplierEntity.getId())
+                .bankAccountNumber(supplierEntity.getBankAccountNumber())
+                .companyName(supplierEntity.getCompanyName())
+                .emailAddress(supplierEntity.getEmailAddress())
+                .ownerName(supplierEntity.getOwnerName())
+                .password(supplierEntity.getPassword())
+                .mobileMoneyNumber(supplierEntity.getMobileMoneyNumber())
+                .city(supplierEntity.getCity())
+                .phoneNumber(supplierEntity.getPhoneNumber())
+                .businessImages(imageStringToList(supplierEntity.getBusinessImages()))
+                .profileImageUrl(supplierEntity.getProfileImageUrl())
+                .businessDescription(supplierEntity.getBusinessDescription())
+                .businessName(supplierEntity.getBusinessName())
                 .build();
     }
 
@@ -65,7 +83,7 @@ public class EntityDTOConverter {
                 .description(productDTO.getDescription())
                 .unitPrice(productDTO.getUnitPrice())
                 .quantity(productDTO.getQuantity())
-                .imageUrl(productDTO.getImageUrl())
+                .imageUrl(imageUrlsToString(productDTO.getImageUrl()))
                 .category(productDTO.getCategory())
                 .isAvailable(productDTO.isAvailable())
                 .build();
@@ -78,7 +96,7 @@ public class EntityDTOConverter {
                 .description(entity.getDescription())
                 .unitPrice(entity.getUnitPrice())
                 .quantity(entity.getQuantity())
-                .imageUrl(entity.getImageUrl())
+                .imageUrl(imageStringToList(entity.getImageUrl()))
                 .category(entity.getCategory())
                 .supplierId(entity.getSupplier().getId())
                 .isAvailable(entity.isAvailable())

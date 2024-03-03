@@ -13,4 +13,5 @@ public interface ProductService {
     ProductDTO getProductById(UUID id);
     List<ProductDTO> getAllProductsForSupplier(UUID supplierId);
 
+    List<ProductDTO> getPopularProducts();
 }

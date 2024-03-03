@@ -68,4 +68,9 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDTO> getAllProductsForSupplier(UUID supplierId) {
         return productRepository.findBySupplierId(supplierId).stream().map(EntityDTOConverter::convertProductEntityToDTO).toList();
     }
+
+    @Override
+    public List<ProductDTO> getPopularProducts() {
+        return productRepository.findAll().stream().map(EntityDTOConverter::convertProductEntityToDTO).toList();
+    }
 }

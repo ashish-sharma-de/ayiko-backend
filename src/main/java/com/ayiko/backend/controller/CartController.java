@@ -36,17 +36,17 @@ public class CartController {
 
     private final String ERROR_INVALID_SUPPLIER_ID = "Customer id doesn't match the customer in token";
 
-    @PostMapping
-    public ResponseEntity<CartDTO> createCart(@RequestBody CartDTO cartDTO, @RequestHeader("Authorization") String authorizationHeader) {
-        try {
-            UUID customerId = getCustomerIdFromToken(authorizationHeader);
-            cartDTO.setCustomerId(customerId);
-            cartDTO.setStatus(CartStatus.PENDING);
-            return ResponseEntity.ok(cartService.saveCart(cartDTO));
-        } catch (Exception e) {
-            return handleException(e);
-        }
-    }
+//    @PostMapping
+//    public ResponseEntity<CartDTO> createCart(@RequestBody CartDTO cartDTO, @RequestHeader("Authorization") String authorizationHeader) {
+//        try {
+//            UUID customerId = getCustomerIdFromToken(authorizationHeader);
+//            cartDTO.setCustomerId(customerId);
+//            cartDTO.setStatus(CartStatus.PENDING);
+//            return ResponseEntity.ok(cartService.saveCart(cartDTO));
+//        } catch (Exception e) {
+//            return handleException(e);
+//        }
+//    }
 
     private String validateToken(String authorizationHeader) {
         String token = authorizationHeader.substring(7); // Assuming the header starts with "Bearer "
@@ -90,12 +90,15 @@ public class CartController {
         }
     }
 
-    @GetMapping("/{id}/sendForApproval")
-    public ResponseEntity sendForApproval(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
+    @PostMapping("/sendForApproval")
+    public ResponseEntity sendForApproval(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader, @RequestBody CartDTO cartDTO) {
         try {
-            getCustomerIdFromToken(authorizationHeader);
-            cartService.sendForApproval(id);
-            return ResponseEntity.ok().build();
+
+            UUID customerId = getCustomerIdFromToken(authorizationHeader);
+            cartDTO.setCustomerId(customerId);
+            cartDTO.setStatus(CartStatus.SENT_FOR_APPROVAL);
+            cartService.saveCart(cartDTO);
+            return ResponseEntity.ok(cartService.saveCart(cartDTO));
         } catch (Exception e) {
             return handleException(e);
         }
@@ -131,7 +134,7 @@ public class CartController {
         }
     }
 
-    @GetMapping("/{id}/addPaymentConfirmationStatus")
+    @PostMapping("/{id}/addPaymentConfirmationStatus")
     public ResponseEntity addPaymentConfirmationStatus(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader, @RequestParam("status") CartPaymentConfirmationStatus status) {
         try {
             UUID tokenCustomerId = getCustomerIdFromToken(authorizationHeader);
@@ -146,7 +149,7 @@ public class CartController {
         }
     }
 
-    @GetMapping("/{id}/addPaymentReceiptStatus")
+    @PostMapping("/{id}/addPaymentReceiptStatus")
     public ResponseEntity addPaymentReceiptStatus(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader, @RequestParam("status") CartPaymentReceiptStatus status) {
         try {
             UUID tokenSupplier = getSupplierIdFromToken(authorizationHeader);

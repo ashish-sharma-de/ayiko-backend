@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,6 +40,11 @@ public class SupplierEntity {
 
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<ProductEntity> products;
+
+    private String profileImageUrl;
+    private String businessImages;
+    private String businessName;
+    private String businessDescription;
 
     @PrePersist
     protected void onCreate() {

@@ -56,11 +56,19 @@ public class ProductController {
         return supplierDTO.getId();
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProductsForSupplier(@RequestHeader("Authorization") String authorizationHeader) {
+    private void validateToken(String authorizationHeader) {
+        String token = authorizationHeader.substring(7); // Assuming the header starts with "Bearer "
+        if (!tokenProvider.validateToken(token)) {
+            throw new RuntimeException(ERROR_INVALID_TOKEN);
+        }
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<List<ProductDTO>> getPopularProducts(@RequestHeader("Authorization") String authorizationHeader) {
+
         try {
-            UUID supplierId = getSupplierIdFromToken(authorizationHeader);
-            return ResponseEntity.ok(productService.getAllProductsForSupplier(supplierId));
+            validateToken(authorizationHeader);
+            return ResponseEntity.ok(productService.getPopularProducts());
         } catch (Exception e) {
             return handleException(e);
         }
