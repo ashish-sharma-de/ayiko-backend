@@ -5,6 +5,7 @@ import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartItemDTO;
 import com.ayiko.backend.repository.entity.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,10 +14,16 @@ public class EntityDTOConverter {
 
     private static String LIMITER = "#@";
     public static String imageUrlsToString(List<String> imageUrls) {
+        if(imageUrls == null || imageUrls.isEmpty()) {
+            return "";
+        }
         return String.join(LIMITER, imageUrls);
     }
 
     public static List<String> imageStringToList(String imageUrl) {
+        if(imageUrl == null || imageUrl.isEmpty()) {
+            return new ArrayList<>();
+        }
         return Arrays.asList(imageUrl.split(LIMITER));
     }
 
