@@ -97,7 +97,6 @@ public class CartController {
             UUID customerId = getCustomerIdFromToken(authorizationHeader);
             cartDTO.setCustomerId(customerId);
             cartDTO.setStatus(CartStatus.SENT_FOR_APPROVAL);
-            cartService.saveCart(cartDTO);
             return ResponseEntity.ok(cartService.saveCart(cartDTO));
         } catch (Exception e) {
             return handleException(e);
