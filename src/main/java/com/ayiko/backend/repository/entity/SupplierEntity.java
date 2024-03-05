@@ -45,6 +45,7 @@ public class SupplierEntity {
     private String businessImages;
     private String businessName;
     private String businessDescription;
+    private Double rating;
 
     @PrePersist
     protected void onCreate() {

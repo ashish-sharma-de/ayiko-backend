@@ -23,4 +23,5 @@ public class SupplierDTO {
     private List<String> businessImages;
     private String businessName;
     private String businessDescription;
+    private Double rating;
 }

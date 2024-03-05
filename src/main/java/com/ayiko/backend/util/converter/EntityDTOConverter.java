@@ -62,6 +62,7 @@ public class EntityDTOConverter {
                 .profileImageUrl(supplierDTO.getProfileImageUrl())
                 .businessName(supplierDTO.getBusinessName())
                 .businessDescription(supplierDTO.getBusinessDescription())
+                .rating(supplierDTO.getRating())
                 .build();
     }
 
@@ -80,6 +81,7 @@ public class EntityDTOConverter {
                 .profileImageUrl(supplierEntity.getProfileImageUrl())
                 .businessDescription(supplierEntity.getBusinessDescription())
                 .businessName(supplierEntity.getBusinessName())
+                .rating(supplierEntity.getRating())
                 .build();
     }
 

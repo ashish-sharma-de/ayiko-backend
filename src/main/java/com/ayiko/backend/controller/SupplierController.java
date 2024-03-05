@@ -68,7 +68,7 @@ public class SupplierController {
         if (supplierById == null) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ERROR_INVALID_ID)).build();
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(supplierById);
         }
     }
 

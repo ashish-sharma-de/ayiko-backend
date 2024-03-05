@@ -5,6 +5,8 @@ import com.ayiko.backend.dto.ProductDTO;
 import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.service.ProductService;
 import com.ayiko.backend.service.SupplierService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -29,6 +31,8 @@ public class ProductController {
     private final String ERROR_INVALID_PRODUCT_ID = "Token invalid, valid token required to access this API";
 
     private final String ERROR_INVALID_SUPPLIER_ID = "Supplier id doesn't match the supplierId in token or product";
+
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @PostMapping
     public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO, @RequestHeader("Authorization") String authorizationHeader) {
@@ -124,6 +128,7 @@ public class ProductController {
         if (e instanceof RuntimeException && (e.getMessage().equals(ERROR_INVALID_TOKEN) || e.getMessage().equals(ERROR_INVALID_SUPPLIER_ID))) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage())).build();
         }
+        logger.error("Error occurred: {}", e.getMessage(), e);
         return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage())).build();
     }
 
