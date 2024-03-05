@@ -152,6 +152,19 @@ public class SupplierController {
         }
     }
 
+    @GetMapping("{id}/bestsellers")
+    public ResponseEntity<List<ProductDTO>> getBestsellersForSupplier(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            String token = validateToken(authorizationHeader);
+            if (token == null) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ERROR_INVALID_TOKEN)).build();
+            }
+            return ResponseEntity.ok(productService.getAllProductsForSupplier(id));
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
     @GetMapping("/getByToken")
     public SupplierDTO getSupplierByToken(@RequestHeader("Authorization") String authorizationHeader) {
         String token = validateToken(authorizationHeader);

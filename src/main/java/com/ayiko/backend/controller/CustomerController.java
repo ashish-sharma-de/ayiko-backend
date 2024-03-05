@@ -105,7 +105,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{customerId}/carts")
-    public ResponseEntity<List<CartDTO>> getCartsForSupplier(@PathVariable UUID customerId, @RequestHeader("Authorization") String authorizationHeader, @RequestParam(name = "status") CartStatus status) {
+    public ResponseEntity<List<CartDTO>> getCartsForSupplier(@PathVariable UUID customerId, @RequestHeader("Authorization") String authorizationHeader, @RequestParam(name = "status", required = false) CartStatus status) {
         try {
             UUID customerById = getCustomerIdFromToken(authorizationHeader);
             if (!customerById.equals(customerId)) {
