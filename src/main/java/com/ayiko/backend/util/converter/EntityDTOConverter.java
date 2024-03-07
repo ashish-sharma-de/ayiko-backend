@@ -118,6 +118,7 @@ public class EntityDTOConverter {
                 .id(entity.getId())
                 .customerId(entity.getCustomerId())
                 .supplierId(entity.getSupplierId())
+                .status(entity.getStatus())
                 .items(items)
                 .build();
     }
@@ -136,6 +137,7 @@ public class EntityDTOConverter {
                 .id(dto.getId())
                 .customerId(dto.getCustomerId())
                 .supplierId(dto.getSupplierId())
+                .status(dto.getStatus())
                 .items(items)
                 .build();
     }
