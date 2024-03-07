@@ -31,7 +31,13 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDTO getCartById(UUID cartID) {
-        return cartRepository.findById(cartID).map(EntityDTOConverter::convertCartEntityToCartDTO).orElse(null);
+        Optional<CartEntity> byId = cartRepository.findById(cartID);
+        if (byId.isEmpty()) {
+            return null;
+        }
+        CartEntity cartEntity = byId.get();
+        cartEntity.getItems();
+        return EntityDTOConverter.convertCartEntityToCartDTO(cartEntity);
     }
 
     @Override
