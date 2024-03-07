@@ -91,7 +91,7 @@ public class CartController {
     }
 
     @PostMapping("/sendForApproval")
-    public ResponseEntity sendForApproval(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader, @RequestBody CartDTO cartDTO) {
+    public ResponseEntity sendForApproval( @RequestHeader("Authorization") String authorizationHeader, @RequestBody CartDTO cartDTO) {
         try {
 
             UUID customerId = getCustomerIdFromToken(authorizationHeader);
