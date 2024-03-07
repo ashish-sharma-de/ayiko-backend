@@ -104,7 +104,7 @@ public class CartController {
     }
 
     @PostMapping("/{id}/acceptCart")
-    public ResponseEntity acceptCart(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity acceptCart(@RequestHeader("Authorization") String authorizationHeader) {
         try {
             UUID tokenSupplierId = getSupplierIdFromToken(authorizationHeader);
             CartDTO cart = cartService.getCartById(id);
