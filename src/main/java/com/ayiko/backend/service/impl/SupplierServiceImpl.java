@@ -35,16 +35,23 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public SupplierDTO updateSupplier(UUID id, SupplierDTO supplierDTO) {
-        repository.findById(id).ifPresent(supplierEntity -> {
-            supplierEntity.setBankAccountNumber(supplierDTO.getBankAccountNumber());
-            supplierEntity.setCity(supplierDTO.getCity());
-            supplierEntity.setCompanyName(supplierDTO.getCompanyName());
-            supplierEntity.setEmailAddress(supplierDTO.getEmailAddress());
-            supplierEntity.setMobileMoneyNumber(supplierDTO.getMobileMoneyNumber());
-            supplierEntity.setOwnerName(supplierDTO.getOwnerName());
-            supplierEntity.setPhoneNumber(supplierDTO.getPhoneNumber());
-            repository.save(supplierEntity);
-        });
+        Optional<SupplierEntity> byId = repository.findById(id);
+        if(byId.isPresent()){
+            SupplierEntity supplierEntity = byId.get();
+            supplierEntity.setBankAccountNumber(supplierDTO.getBankAccountNumber() != null ? supplierDTO.getBankAccountNumber() : supplierEntity.getBankAccountNumber());
+            supplierEntity.setCity(supplierDTO.getCity() != null ? supplierDTO.getCity() : supplierEntity.getCity());
+            supplierEntity.setCompanyName(supplierDTO.getCompanyName() != null ? supplierDTO.getCompanyName() : supplierEntity.getCompanyName());
+            supplierEntity.setEmailAddress(supplierDTO.getEmailAddress() != null ? supplierDTO.getEmailAddress() : supplierEntity.getEmailAddress());
+            supplierEntity.setMobileMoneyNumber(supplierDTO.getMobileMoneyNumber() != null ? supplierDTO.getMobileMoneyNumber() : supplierEntity.getMobileMoneyNumber());
+            supplierEntity.setOwnerName(supplierDTO.getOwnerName() != null ? supplierDTO.getOwnerName() : supplierEntity.getOwnerName());
+            supplierEntity.setPhoneNumber(supplierDTO.getPhoneNumber() != null ? supplierDTO.getPhoneNumber() : supplierEntity.getPhoneNumber());
+            supplierEntity.setBusinessImages(EntityDTOConverter.imageUrlsToString(supplierDTO.getBusinessImages()) != null ? EntityDTOConverter.imageUrlsToString(supplierDTO.getBusinessImages()) : supplierEntity.getBusinessImages());
+            supplierEntity.setBusinessName(supplierDTO.getBusinessName() != null ? supplierDTO.getBusinessName() : supplierEntity.getBusinessName());
+            supplierEntity.setBusinessDescription(supplierDTO.getBusinessDescription() != null ? supplierDTO.getBusinessDescription() : supplierEntity.getBusinessDescription());
+            supplierEntity.setProfileImageUrl(supplierDTO.getProfileImageUrl() != null ? supplierDTO.getProfileImageUrl() : supplierEntity.getProfileImageUrl());
+
+            supplierDTO = EntityDTOConverter.convertSupplierEntityToSupplierDTO(repository.save(supplierEntity));
+        }
         return supplierDTO;
     }
 
