@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.Optional;
+
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -36,11 +38,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO updateCustomer(UUID id, CustomerDTO CustomerDTO) {
-        CustomerDTO customerDTO = repository.findById(id).map(EntityDTOConverter::convertCustomerEntityToCustomerDTO).orElse(null);
-        if (customerDTO != null) {
-            CustomerDTO.setId(id);
-            CustomerEntity save = repository.save(EntityDTOConverter.convertCustomerDTOToCustomerEntity(CustomerDTO));
-            return EntityDTOConverter.convertCustomerEntityToCustomerDTO(save);
+        Optional<CustomerEntity> byId = repository.findById(id);
+        if(byId.isPresent()){
+            CustomerEntity CustomerEntity = byId.get();
+            CustomerEntity.setEmailAddress(CustomerDTO.getEmailAddress() != null ? CustomerDTO.getEmailAddress() : CustomerEntity.getEmailAddress());
+            CustomerEntity.setPhoneNumber(CustomerDTO.getPhoneNumber() != null ? CustomerDTO.getPhoneNumber() : CustomerEntity.getPhoneNumber());
+            CustomerEntity.setFullName(CustomerDTO.getFullName() != null ? CustomerDTO.getFullName() : CustomerEntity.getFullName());
+            return EntityDTOConverter.convertCustomerEntityToCustomerDTO(repository.save(CustomerEntity));
         }
         return null;
     }
