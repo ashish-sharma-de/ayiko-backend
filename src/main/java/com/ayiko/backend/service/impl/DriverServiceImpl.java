@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.Optional;
 
 @Service
 public class DriverServiceImpl implements DriverService {
@@ -37,15 +38,17 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public DriverDTO updateDriver(UUID id, DriverDTO driverDTO) {
-        repository.findById(id).ifPresent(driverEntity -> {
-            driverEntity.setName(driverDTO.getName());
-            driverEntity.setEmail(driverDTO.getEmail());
-            driverEntity.setPhone(driverDTO.getPhone());
-            driverEntity.setVehicleNumber(driverDTO.getVehicleNumber());
-            driverEntity.setPassword(driverDTO.getPassword());
-            repository.save(driverEntity);
-        });
-        return driverDTO;
+        Optional<DriverEntity> byId = repository.findById(id);
+        if(byId.isPresent()){
+            DriverEntity driverEntity = byId.get();
+            driverEntity.setName(driverDTO.getName() != null ? driverDTO.getName() : driverEntity.getName());
+            driverEntity.setEmail(driverDTO.getEmail() != null ? driverDTO.getEmail() : driverEntity.getEmail());
+            driverEntity.setPhone(driverDTO.getPhone() != null ? driverDTO.getPhone() : driverEntity.getPhone());
+            driverEntity.setVehicleNumber(driverDTO.getVehicleNumber() != null ? driverDTO.getVehicleNumber() : driverEntity.getVehicleNumber());
+            driverEntity.setPassword(driverDTO.getPassword() != null ? driverDTO.getPassword() : driverEntity.getPassword());
+            return EntityDTOConverter.convertDriverEntityToDTO(repository.save(driverEntity));
+        }
+        return null;
     }
 
     @Override
