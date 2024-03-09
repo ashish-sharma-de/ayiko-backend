@@ -40,10 +40,14 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO updateProduct(UUID id, ProductDTO productDTO) {
         Optional<ProductEntity> byId = productRepository.findById(id);
         if (byId.isPresent()) {
-            SupplierEntity supplierEntity = supplierRepository.findById(productDTO.getSupplierId()).orElseThrow(() -> new RuntimeException("Supplier not found"));
-            ProductEntity productEntity = EntityDTOConverter.convertProductDTOToEntity(productDTO);
-            productEntity.setSupplier(supplierEntity);
-            productEntity.setId(byId.get().getId());
+            ProductEntity productEntity = byId.get();
+            productEntity.setName(productDTO.getName() != null ? productDTO.getName() : productEntity.getName());
+            productEntity.setUnitPrice(productDTO.getUnitPrice() != null ? productDTO.getUnitPrice() : productEntity.getUnitPrice());
+            productEntity.setQuantity(productDTO.getQuantity() != null ? productDTO.getQuantity() : productEntity.getQuantity());
+            productEntity.setCategory(productDTO.getCategory() != null ? productDTO.getCategory() : productEntity.getCategory());
+            productEntity.setDescription(productDTO.getDescription() != null ? productDTO.getDescription() : productEntity.getDescription());
+            productEntity.setImageUrl(productDTO.getImageUrl() != null ? EntityDTOConverter.imageUrlsToString(productDTO.getImageUrl()) : productEntity.getImageUrl());
+
             ProductEntity save = productRepository.save(productEntity);
             return EntityDTOConverter.convertProductEntityToDTO(save);
         }
