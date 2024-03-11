@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +43,22 @@ public class CartEntity {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDate.now();
+    }
+
+    public void addItem(CartItemEntity item) {
+        if(this.items == null){
+            this.items = new ArrayList<>();
+        }
+        items.add(item);
+        item.setCart(this);
+    }
+
+    public void removeItem(CartItemEntity item) {
+        if(this.items == null){
+            return;
+        }
+        items.remove(item);
+        item.setCart(null);
     }
 
 }

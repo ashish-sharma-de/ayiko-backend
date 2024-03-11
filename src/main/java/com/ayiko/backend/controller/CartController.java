@@ -9,6 +9,7 @@ import com.ayiko.backend.dto.cart.CartStatus;
 import com.ayiko.backend.service.CartService;
 import com.ayiko.backend.service.CustomerService;
 import com.ayiko.backend.service.SupplierService;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -16,10 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("api/v1/cart")
 public class CartController {
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CartController.class);
 
     @Autowired
     private CartService cartService;
@@ -200,6 +204,7 @@ public class CartController {
         if (e instanceof RuntimeException && (e.getMessage().equals(ERROR_INVALID_TOKEN) || e.getMessage().equals(ERROR_INVALID_SUPPLIER_ID))) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage())).build();
         }
+        logger.error("Error occurred: {}", e.getMessage(), e);
         return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage())).build();
     }
 }

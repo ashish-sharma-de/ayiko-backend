@@ -1,5 +1,7 @@
 package com.ayiko.backend.dto.cart;
 
+import com.ayiko.backend.dto.CustomerDTO;
+import com.ayiko.backend.dto.SupplierDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +20,6 @@ public class CartDTO {
     private UUID customerId;
     private List<CartItemDTO> items;
     private CartStatus status;
+    private SupplierDTO supplier;
+    private CustomerDTO customer;
 }

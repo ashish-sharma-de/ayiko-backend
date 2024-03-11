@@ -1,11 +1,13 @@
 package com.ayiko.backend.service.impl;
 
+import com.ayiko.backend.dto.ProductDTO;
 import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartPaymentConfirmationStatus;
 import com.ayiko.backend.dto.cart.CartPaymentReceiptStatus;
 import com.ayiko.backend.dto.cart.CartStatus;
-import com.ayiko.backend.repository.CartRepository;
+import com.ayiko.backend.repository.*;
 import com.ayiko.backend.repository.entity.CartEntity;
+import com.ayiko.backend.repository.entity.CartItemEntity;
 import com.ayiko.backend.repository.entity.CartPaymentEntity;
 import com.ayiko.backend.service.CartService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
@@ -24,11 +26,34 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private CartRepository cartRepository;
 
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private SupplierRepository supplierRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    private CartDTO convertCartEntityToCartDTO(CartEntity entity){
+        CartDTO dto = EntityDTOConverter.convertCartEntityToCartDTO(entity);
+        dto.getItems().forEach(cartItemDTO -> {
+            ProductDTO productDTO = EntityDTOConverter.convertProductEntityToDTO(productRepository.findById(cartItemDTO.getProductId()).orElse(null));
+            cartItemDTO.setProduct(productDTO);
+        });
+        dto.setSupplier(EntityDTOConverter.convertSupplierEntityToSupplierDTO(supplierRepository.findById(dto.getSupplierId()).orElse(null)));
+        dto.setCustomer(EntityDTOConverter.convertCustomerEntityToCustomerDTO(customerRepository.findById(dto.getCustomerId()).orElse(null)));
+        return dto;
+    }
+
     @Override
     public CartDTO saveCart(CartDTO cartDTO) {
         CartEntity cartEntity = EntityDTOConverter.convertCartDTOToEntity(cartDTO);
         CartEntity save = cartRepository.save(cartEntity);
-        return EntityDTOConverter.convertCartEntityToCartDTO(save);
+        return convertCartEntityToCartDTO(save);
     }
 
     @Override
@@ -39,15 +64,26 @@ public class CartServiceImpl implements CartService {
         }
         CartEntity cartEntity = byId.get();
         cartEntity.getItems();
-        return EntityDTOConverter.convertCartEntityToCartDTO(cartEntity);
+        return convertCartEntityToCartDTO(cartEntity);
     }
 
     @Override
     public CartDTO updateCart(CartDTO cartDTO) {
         CartEntity cartEntity = cartRepository.findById(cartDTO.getId()).orElse(null);
         if (cartEntity != null) {
-            CartEntity save = cartRepository.save(EntityDTOConverter.convertCartDTOToEntity(cartDTO));
-            return EntityDTOConverter.convertCartEntityToCartDTO(save);
+            cartEntity.setSupplierId(cartDTO.getSupplierId() == null ? cartEntity.getSupplierId() : cartDTO.getSupplierId());
+            cartEntity.setCustomerId(cartDTO.getCustomerId() == null ? cartEntity.getCustomerId() : cartDTO.getCustomerId());
+            cartEntity.setStatus(cartDTO.getStatus() == null ? cartEntity.getStatus() : cartDTO.getStatus());
+            cartEntity.setUpdatedAt(LocalDate.now());
+            cartDTO.getItems().forEach(cartItemDTO -> {
+                CartItemEntity cartItemEntity = EntityDTOConverter.convertCartItemDTOToEntity(cartItemDTO);
+                cartEntity.getItems().stream().filter(item -> item.getId().equals(cartItemDTO.getId())).findFirst().ifPresent(cartItemEntity1 -> {
+                    cartEntity.getItems().remove(cartItemEntity1);
+                });
+                cartEntity.addItem(cartItemEntity);
+            });
+            CartEntity save = cartRepository.save(cartEntity);
+            return convertCartEntityToCartDTO(save);
         }
         return null;
     }
@@ -65,17 +101,17 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<CartDTO> getCartsByCustomerId(UUID customerId, CartStatus status) {
         if (status != null) {
-            return cartRepository.findAllByCustomerIdAndStatus(customerId, status).stream().map(EntityDTOConverter::convertCartEntityToCartDTO).toList();
+            return cartRepository.findAllByCustomerIdAndStatus(customerId, status).stream().map(this::convertCartEntityToCartDTO).toList();
         }
-        return cartRepository.findAllByCustomerId(customerId).stream().map(EntityDTOConverter::convertCartEntityToCartDTO).toList();
+        return cartRepository.findAllByCustomerId(customerId).stream().map(this::convertCartEntityToCartDTO).toList();
     }
 
     @Override
     public List<CartDTO> getCartsBySupplierId(UUID customerId, CartStatus status) {
         if (status != null) {
-            return cartRepository.findAllBySupplierIdAndStatus(customerId, status).stream().map(EntityDTOConverter::convertCartEntityToCartDTO).toList();
+            return cartRepository.findAllBySupplierIdAndStatus(customerId, status).stream().map(this::convertCartEntityToCartDTO).toList();
         }
-        return cartRepository.findAllBySupplierId(customerId).stream().map(EntityDTOConverter::convertCartEntityToCartDTO).toList();
+        return cartRepository.findAllBySupplierId(customerId).stream().map(this::convertCartEntityToCartDTO).toList();
     }
 
     @Override
