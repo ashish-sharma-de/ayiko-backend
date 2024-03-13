@@ -122,7 +122,7 @@ public class SupplierController {
     }
 
     @GetMapping("/{supplierId}/carts")
-    public ResponseEntity<List<CartDTO>> getCartsForSupplier(@PathVariable UUID supplierId, @RequestHeader("Authorization") String authorizationHeader, @RequestParam(name = "status") CartStatus status) {
+    public ResponseEntity<List<CartDTO>> getCartsForSupplier(@PathVariable UUID supplierId, @RequestHeader("Authorization") String authorizationHeader, @RequestParam(name = "status", required = false) CartStatus status) {
         try {
             String token = validateToken(authorizationHeader);
             if (token == null) {
