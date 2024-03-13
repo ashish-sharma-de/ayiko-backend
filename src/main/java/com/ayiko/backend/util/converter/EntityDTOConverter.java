@@ -3,6 +3,7 @@ package com.ayiko.backend.util.converter;
 import com.ayiko.backend.dto.*;
 import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartItemDTO;
+import com.ayiko.backend.dto.cart.PaymentDTO;
 import com.ayiko.backend.repository.entity.*;
 
 import java.util.ArrayList;
@@ -120,6 +121,10 @@ public class EntityDTOConverter {
                 .supplierId(entity.getSupplierId())
                 .status(entity.getStatus())
                 .items(items)
+                .paymentDetails(PaymentDTO.builder()
+                        .customerStatus(entity.getPaymentDetails() != null ? entity.getPaymentDetails().getConfirmationStatus() : null)
+                        .supplierStatus(entity.getPaymentDetails() != null ? entity.getPaymentDetails().getReceiptStatus() : null)
+                        .build())
                 .build();
     }
 

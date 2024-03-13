@@ -138,14 +138,14 @@ public class CartController {
     }
 
     @PostMapping("/{id}/addPaymentConfirmationStatus")
-    public ResponseEntity addPaymentConfirmationStatus(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader, @RequestParam("status") CartPaymentConfirmationStatus status) {
+    public ResponseEntity addPaymentConfirmationStatus(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
         try {
             UUID tokenCustomerId = getCustomerIdFromToken(authorizationHeader);
             CartDTO cart = cartService.getCartById(id);
             if (!cart.getCustomerId().equals(tokenCustomerId)) {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to accept this cart")).build();
             }
-            cartService.updateCartPaymentConfirmationStatus(id, status);
+            cartService.updateCartPaymentConfirmationStatus(id, CartPaymentConfirmationStatus.CONFIRMED);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return handleException(e);

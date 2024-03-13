@@ -22,4 +22,5 @@ public class CartDTO {
     private CartStatus status;
     private SupplierDTO supplier;
     private CustomerDTO customer;
+    private PaymentDTO paymentDetails;
 }
