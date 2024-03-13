@@ -127,7 +127,7 @@ public class CartController {
         try {
             UUID tokenSupplierId = getSupplierIdFromToken(authorizationHeader);
             CartDTO cart = cartService.getCartById(id);
-            if (cart.getSupplierId() != tokenSupplierId) {
+            if (cart.getSupplierId().equals(tokenSupplierId)) {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to accept this cart")).build();
             }
             cartService.rejectCart(id);
