@@ -156,7 +156,7 @@ public class CartServiceImpl implements CartService {
         }
         paymentDetails.setConfirmationStatus(status);
         paymentDetails.setConfirmationDate(LocalDate.now());
-
+        paymentDetails.setCart(cartEntity);
         cartEntity.setPaymentDetails(paymentDetails);
         cartRepository.save(cartEntity);
     }
@@ -173,7 +173,7 @@ public class CartServiceImpl implements CartService {
         }
         paymentDetails.setReceiptStatus(status);
         paymentDetails.setReceiptDate(LocalDate.now());
-
+        paymentDetails.setCart(cartEntity);
         cartEntity.setPaymentDetails(paymentDetails);
         cartRepository.save(cartEntity);
     }
