@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -35,6 +36,9 @@ public class ProductEntity {
     @ManyToOne
     @JoinColumn(name = "supplier_id")
     private SupplierEntity supplier;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<ProductImageEntity> images;
 
     @PrePersist
     protected void onCreate() {

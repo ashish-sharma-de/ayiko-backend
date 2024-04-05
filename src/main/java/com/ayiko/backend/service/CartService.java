@@ -4,6 +4,7 @@ import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartPaymentConfirmationStatus;
 import com.ayiko.backend.dto.cart.CartPaymentReceiptStatus;
 import com.ayiko.backend.dto.cart.CartStatus;
+import com.ayiko.backend.repository.entity.CartEntity;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,5 +30,5 @@ public interface CartService {
 
     void updateCartPaymentConfirmationStatus(UUID id, CartPaymentConfirmationStatus status);
 
-    void updateCartPaymentReceiptStatus(UUID id, CartPaymentReceiptStatus status);
+    CartEntity updateCartPaymentReceiptStatus(UUID id, CartPaymentReceiptStatus status);
 }

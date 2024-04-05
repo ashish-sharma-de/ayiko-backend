@@ -13,4 +13,5 @@ public class CustomerDTO {
     private String phoneNumber;
     private String emailAddress;
     private String password; // Note: handle the password securely, consider not exposing in DTO
+    private LocationDTO location;
 }

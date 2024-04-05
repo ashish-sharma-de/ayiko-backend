@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.locationtech.jts.geom.Point;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -24,13 +26,14 @@ public class CustomerEntity {
     private String phoneNumber;
     @Column(unique = true)
     private String emailAddress;
-    private String password; // Store hashed passwords only
+    private String password;
     @CreatedDate
     private LocalDate createdAt;
     @LastModifiedDate
     private LocalDate updatedAt;
     private LocalDate lastLoginAt;
 
+    private Point location;
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDate.now();

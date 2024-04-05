@@ -1,14 +1,17 @@
 package com.ayiko.backend.repository.entity;
 
+import com.ayiko.backend.dto.order.OrderDriverStatus;
 import com.ayiko.backend.dto.order.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -23,18 +26,21 @@ public class OrderEntity {
     private UUID supplierId;
     private UUID customerId;
 
-    private OrderStatus status;
+    private OrderStatus orderStatus;
+
+    private OrderDriverStatus driverStatus;
     private LocalDate createdAt;
     private LocalDate updatedAt;
 
-//TODO: Add driver entity
-//    private DriverEntity driver;
+    private UUID driverId;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private OrderPaymentEntity paymentDetails;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<OrderItemEntity> items;
+    private Set<OrderItemEntity> items;
+
+    private Point deliveryLocation;
 
     @PrePersist
     protected void onCreate() {

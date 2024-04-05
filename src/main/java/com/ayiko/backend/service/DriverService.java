@@ -11,7 +11,7 @@ public interface DriverService {
     DriverDTO updateDriver(UUID id, DriverDTO driverDTO);
     boolean deleteDriver(UUID id);
     DriverDTO getDriverById(UUID id);
-    List<DriverDTO> getAllDrivers();
+    List<DriverDTO> getAllDriversForSupplier(UUID id);
 
     DriverDTO getDriverByEmail(String email);
 

@@ -1,13 +1,12 @@
 package com.ayiko.backend.controller;
 
 import com.ayiko.backend.config.JWTTokenProvider;
-import com.ayiko.backend.dto.CustomerDTO;
 import com.ayiko.backend.dto.DriverDTO;
 import com.ayiko.backend.dto.LoginDTO;
-import com.ayiko.backend.dto.cart.CartDTO;
-import com.ayiko.backend.dto.cart.CartStatus;
-import com.ayiko.backend.service.CartService;
+import com.ayiko.backend.dto.SupplierDTO;
+import com.ayiko.backend.exception.ExceptionHandler;
 import com.ayiko.backend.service.DriverService;
+import com.ayiko.backend.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -19,7 +18,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/drivers")
-public class DriverEntityController {
+public class DriverController {
     private final String ERROR_INVALID_TOKEN = "Token is empty or invalid, valid token required to access this API";
     private final String ERROR_DUPLICATE_EMAIL = "Email already present.";
 
@@ -33,26 +32,32 @@ public class DriverEntityController {
     @Autowired
     private DriverService driverService;
 
+    @Autowired
+    private SupplierService supplierService;
+
     @PostMapping
-    public ResponseEntity<DriverDTO> createDriver(@RequestBody DriverDTO customerDTO) {
+    public ResponseEntity<DriverDTO> createDriver(@RequestBody DriverDTO driverDTO, @RequestHeader("Authorization") String supplierTokenHeader) {
         try {
-            DriverDTO driver = driverService.getDriverByEmail(customerDTO.getEmail());
+            SupplierDTO supplierDTO = getSupplierIdFromToken(supplierTokenHeader);
+            driverDTO.setSupplierId(supplierDTO.getId());
+            DriverDTO driver = driverService.getDriverByEmail(driverDTO.getEmail());
             if (driver != null) {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ERROR_DUPLICATE_EMAIL)).build();
             }
-            return ResponseEntity.ok(driverService.createDriver(customerDTO));
+            return ResponseEntity.ok(driverService.createDriver(driverDTO));
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
     @GetMapping
-    public List<DriverDTO> getAllDriver() {
-        return driverService.getAllDrivers();
+    public List<DriverDTO> getAllDriver(@RequestHeader("Authorization") String supplierTokenHeader) {
+        SupplierDTO supplierDTO = getSupplierIdFromToken(supplierTokenHeader);
+        return driverService.getAllDriversForSupplier(supplierDTO.getId());
     }
 
     @GetMapping("/getByToken")
-    public DriverDTO getCustomerByToken(@RequestHeader("Authorization") String authorizationHeader) {
+    public DriverDTO getDriverByToken(@RequestHeader("Authorization") String authorizationHeader) {
         try {
 
             UUID customerIdFromToken = getDriverIdFromToken(authorizationHeader);
@@ -72,7 +77,7 @@ public class DriverEntityController {
                 return ResponseEntity.ok(driverById);
             }
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -85,7 +90,7 @@ public class DriverEntityController {
             }
             return ResponseEntity.ok(driverService.resetPassword(id, currentPassword, newPassword));
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -99,7 +104,7 @@ public class DriverEntityController {
             DriverDTO updateDriver = driverService.updateDriver(id, driverDTO);
             return ResponseEntity.ok(updateDriver);
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -115,12 +120,12 @@ public class DriverEntityController {
             boolean deleted = driverService.deleteDriver(id);
             return ResponseEntity.ok(deleted);
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<String> authenticateCustomer(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<String> authenticateDriver(@RequestBody LoginDTO loginDTO) {
         try {
             DriverDTO driverByEmail = driverService.getDriverByEmail(loginDTO.getUsername());
             if (driverByEmail == null) {
@@ -129,16 +134,8 @@ public class DriverEntityController {
             String token = driverService.authenticateDriver(loginDTO);
             return token != null ? ResponseEntity.ok(token) : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
-    }
-
-
-    private ResponseEntity handleException(Exception e) {
-        if (e instanceof RuntimeException && (e.getMessage().equals(ERROR_INVALID_TOKEN) || e.getMessage().equals(ERROR_INVALID_ID))) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage())).build();
-        }
-        return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage())).build();
     }
 
     private UUID getDriverIdFromToken(String authorizationHeader) {
@@ -149,6 +146,16 @@ public class DriverEntityController {
             throw new RuntimeException(ERROR_INVALID_TOKEN);
         }
         return driver.getId();
+    }
+
+    private SupplierDTO getSupplierIdFromToken(String authorizationHeader) {
+        String token = validateToken(authorizationHeader);
+        String username = tokenProvider.getUsernameFromJWT(token);
+        SupplierDTO supplierDTO = supplierService.getSupplierByEmail(username);
+        if (supplierDTO == null || !supplierDTO.getEmailAddress().equals(username)) {
+            throw new RuntimeException(ERROR_INVALID_TOKEN);
+        }
+        return supplierDTO;
     }
 
     private String validateToken(String authorizationHeader) {

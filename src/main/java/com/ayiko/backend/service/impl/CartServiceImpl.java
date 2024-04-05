@@ -162,7 +162,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void updateCartPaymentReceiptStatus(UUID id, CartPaymentReceiptStatus status) {
+    public CartEntity updateCartPaymentReceiptStatus(UUID id, CartPaymentReceiptStatus status) {
         CartEntity cartEntity = cartRepository.findById(id).orElse(null);
         if (cartEntity == null) {
             throw new RuntimeException("Invalid Cart ID");
@@ -175,7 +175,7 @@ public class CartServiceImpl implements CartService {
         paymentDetails.setReceiptDate(LocalDate.now());
         paymentDetails.setCart(cartEntity);
         cartEntity.setPaymentDetails(paymentDetails);
-        cartRepository.save(cartEntity);
+        return cartRepository.save(cartEntity);
     }
 
 

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -21,7 +22,9 @@ public class SupplierDTO {
 
     private String profileImageUrl;
     private List<String> businessImages;
+    private Set<ImageDTO> images;
     private String businessName;
     private String businessDescription;
     private Double rating;
+    private LocationDTO location;
 }

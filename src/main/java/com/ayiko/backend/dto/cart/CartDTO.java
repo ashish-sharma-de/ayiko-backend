@@ -6,8 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -18,7 +17,7 @@ public class CartDTO {
     private UUID id;
     private UUID supplierId;
     private UUID customerId;
-    private List<CartItemDTO> items;
+    private Set<CartItemDTO> items;
     private CartStatus status;
     private SupplierDTO supplier;
     private CustomerDTO customer;

@@ -4,6 +4,7 @@ import com.ayiko.backend.dto.ProductDTO;
 import com.ayiko.backend.repository.ProductRepository;
 import com.ayiko.backend.repository.SupplierRepository;
 import com.ayiko.backend.repository.entity.ProductEntity;
+import com.ayiko.backend.repository.entity.ProductImageEntity;
 import com.ayiko.backend.repository.entity.SupplierEntity;
 import com.ayiko.backend.service.ProductService;
 import com.ayiko.backend.service.SupplierService;
@@ -11,9 +12,11 @@ import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -47,7 +50,15 @@ public class ProductServiceImpl implements ProductService {
             productEntity.setCategory(productDTO.getCategory() != null ? productDTO.getCategory() : productEntity.getCategory());
             productEntity.setDescription(productDTO.getDescription() != null ? productDTO.getDescription() : productEntity.getDescription());
             productEntity.setImageUrl(productDTO.getImageUrl() != null ? EntityDTOConverter.imageUrlsToString(productDTO.getImageUrl()) : productEntity.getImageUrl());
-
+            productEntity.setImages(productDTO.getImages() != null ? productDTO.getImages().stream().map(imageDTO ->
+                    ProductImageEntity.builder()
+                            .imageUrl(imageDTO.getImageUrl())
+                            .imageType(imageDTO.getImageType())
+                            .imageTitle(imageDTO.getImageTitle())
+                            .imageDescription(imageDTO.getImageDescription())
+                            .product(productEntity)
+                            .build())
+                    .collect(Collectors.toSet()) : new HashSet<>());
             ProductEntity save = productRepository.save(productEntity);
             return EntityDTOConverter.convertProductEntityToDTO(save);
         }

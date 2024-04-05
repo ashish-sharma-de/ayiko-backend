@@ -6,8 +6,12 @@ import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartPaymentConfirmationStatus;
 import com.ayiko.backend.dto.cart.CartPaymentReceiptStatus;
 import com.ayiko.backend.dto.cart.CartStatus;
+import com.ayiko.backend.dto.order.OrderDTO;
+import com.ayiko.backend.exception.ExceptionHandler;
+import com.ayiko.backend.repository.entity.CartEntity;
 import com.ayiko.backend.service.CartService;
 import com.ayiko.backend.service.CustomerService;
+import com.ayiko.backend.service.OrderService;
 import com.ayiko.backend.service.SupplierService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +33,8 @@ public class CartController {
     private CartService cartService;
 
     @Autowired
+    private OrderService orderService;
+    @Autowired
     private CustomerService customerService;
 
     @Autowired
@@ -39,18 +45,6 @@ public class CartController {
     private final String ERROR_INVALID_CART_ID = "Token invalid, valid token required to access this API";
 
     private final String ERROR_INVALID_SUPPLIER_ID = "Customer id doesn't match the customer in token";
-
-//    @PostMapping
-//    public ResponseEntity<CartDTO> createCart(@RequestBody CartDTO cartDTO, @RequestHeader("Authorization") String authorizationHeader) {
-//        try {
-//            UUID customerId = getCustomerIdFromToken(authorizationHeader);
-//            cartDTO.setCustomerId(customerId);
-//            cartDTO.setStatus(CartStatus.PENDING);
-//            return ResponseEntity.ok(cartService.saveCart(cartDTO));
-//        } catch (Exception e) {
-//            return handleException(e);
-//        }
-//    }
 
     private String validateToken(String authorizationHeader) {
         String token = authorizationHeader.substring(7); // Assuming the header starts with "Bearer "
@@ -90,7 +84,7 @@ public class CartController {
             }
             return ResponseEntity.ok(cartDTO);
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -101,9 +95,12 @@ public class CartController {
             UUID customerId = getCustomerIdFromToken(authorizationHeader);
             cartDTO.setCustomerId(customerId);
             cartDTO.setStatus(CartStatus.PENDING);
+            if(cartDTO.getItems() == null || cartDTO.getItems().isEmpty()){
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Cart must have at least one item")).build();
+            }
             return ResponseEntity.ok(cartService.saveCart(cartDTO));
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -118,7 +115,7 @@ public class CartController {
             cartService.acceptCart(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -133,7 +130,7 @@ public class CartController {
             cartService.rejectCart(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -148,7 +145,7 @@ public class CartController {
             cartService.updateCartPaymentConfirmationStatus(id, CartPaymentConfirmationStatus.CONFIRMED);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -160,10 +157,11 @@ public class CartController {
             if (!cart.getSupplierId().equals(tokenSupplier)) {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to accept this cart")).build();
             }
-            cartService.updateCartPaymentReceiptStatus(id, status);
-            return ResponseEntity.ok().build();
+            CartEntity cartEntity = cartService.updateCartPaymentReceiptStatus(id, status);
+            OrderDTO orderDTO = orderService.createOrderForCart(cartEntity);
+            return ResponseEntity.ok(orderDTO);
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -181,7 +179,7 @@ public class CartController {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ERROR_INVALID_CART_ID)).build();
             }
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -196,15 +194,7 @@ public class CartController {
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
-    }
-
-    private ResponseEntity handleException(Exception e) {
-        if (e instanceof RuntimeException && (e.getMessage().equals(ERROR_INVALID_TOKEN) || e.getMessage().equals(ERROR_INVALID_SUPPLIER_ID))) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage())).build();
-        }
-        logger.error("Error occurred: {}", e.getMessage(), e);
-        return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage())).build();
     }
 }

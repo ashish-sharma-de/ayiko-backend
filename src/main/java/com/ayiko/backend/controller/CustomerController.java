@@ -5,6 +5,7 @@ import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartStatus;
 import com.ayiko.backend.dto.CustomerDTO;
 import com.ayiko.backend.dto.LoginDTO;
+import com.ayiko.backend.exception.ExceptionHandler;
 import com.ayiko.backend.service.CartService;
 import com.ayiko.backend.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,15 +116,8 @@ public class CustomerController {
 
 
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
-    }
-
-    private ResponseEntity handleException(Exception e){
-        if (e instanceof RuntimeException && (e.getMessage().equals(ERROR_INVALID_TOKEN) || e.getMessage().equals(ERROR_INVALID_ID))) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage())).build();
-        }
-        return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage())).build();
     }
 
     private UUID getCustomerIdFromToken(String authorizationHeader) {

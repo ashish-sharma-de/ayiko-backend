@@ -5,15 +5,18 @@ import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.repository.entity.SupplierEntity;
 import com.ayiko.backend.repository.SupplierRepository;
+import com.ayiko.backend.repository.entity.SupplierImageEntity;
 import com.ayiko.backend.service.SupplierService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SupplierServiceImpl implements SupplierService {
@@ -46,11 +49,19 @@ public class SupplierServiceImpl implements SupplierService {
             supplierEntity.setMobileMoneyNumber(supplierDTO.getMobileMoneyNumber() != null ? supplierDTO.getMobileMoneyNumber() : supplierEntity.getMobileMoneyNumber());
             supplierEntity.setOwnerName(supplierDTO.getOwnerName() != null ? supplierDTO.getOwnerName() : supplierEntity.getOwnerName());
             supplierEntity.setPhoneNumber(supplierDTO.getPhoneNumber() != null ? supplierDTO.getPhoneNumber() : supplierEntity.getPhoneNumber());
-            supplierEntity.setBusinessImages(EntityDTOConverter.imageUrlsToString(supplierDTO.getBusinessImages()) != null ? EntityDTOConverter.imageUrlsToString(supplierDTO.getBusinessImages()) : supplierEntity.getBusinessImages());
+            supplierEntity.setBusinessImageUrls(EntityDTOConverter.imageUrlsToString(supplierDTO.getBusinessImages()) != null ? EntityDTOConverter.imageUrlsToString(supplierDTO.getBusinessImages()) : supplierEntity.getBusinessImageUrls());
             supplierEntity.setBusinessName(supplierDTO.getBusinessName() != null ? supplierDTO.getBusinessName() : supplierEntity.getBusinessName());
             supplierEntity.setBusinessDescription(supplierDTO.getBusinessDescription() != null ? supplierDTO.getBusinessDescription() : supplierEntity.getBusinessDescription());
             supplierEntity.setProfileImageUrl(supplierDTO.getProfileImageUrl() != null ? supplierDTO.getProfileImageUrl() : supplierEntity.getProfileImageUrl());
 
+            supplierEntity.setBusinessImages(supplierDTO.getImages() != null ? supplierDTO.getImages().stream().map(imageDTO ->
+                    SupplierImageEntity.builder()
+                            .isProfilePicture(imageDTO.isProfilePicture())
+                            .imageUrl(imageDTO.getImageUrl())
+                            .imageDescription(imageDTO.getImageDescription())
+                            .imageTitle(imageDTO.getImageTitle())
+                            .supplier(supplierEntity).build())
+                    .collect(Collectors.toSet()) : new HashSet<>());
             supplierDTO = EntityDTOConverter.convertSupplierEntityToSupplierDTO(repository.save(supplierEntity));
         }
         return supplierDTO;

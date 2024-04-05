@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.locationtech.jts.geom.Point;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
@@ -27,10 +29,14 @@ public class DriverEntity {
     private String phone;
     private String vehicleNumber;
     private String password;
+    private boolean isActive;
+    private UUID supplierId;
+    private DriverStatus status;
 
     @LastModifiedDate
     private LocalDate updatedAt;
     private LocalDate lastLoginAt;
 
+    private Point location;
 
 }

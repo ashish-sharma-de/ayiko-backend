@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DriverServiceImpl implements DriverService {
@@ -46,6 +47,9 @@ public class DriverServiceImpl implements DriverService {
             driverEntity.setPhone(driverDTO.getPhone() != null ? driverDTO.getPhone() : driverEntity.getPhone());
             driverEntity.setVehicleNumber(driverDTO.getVehicleNumber() != null ? driverDTO.getVehicleNumber() : driverEntity.getVehicleNumber());
             driverEntity.setPassword(driverDTO.getPassword() != null ? driverDTO.getPassword() : driverEntity.getPassword());
+            driverEntity.setSupplierId(driverDTO.getSupplierId() != null ? driverDTO.getSupplierId() : driverEntity.getSupplierId());
+            driverEntity.setActive(driverDTO.isActive());
+            driverEntity.setStatus(driverDTO.getStatus() != null ? driverDTO.getStatus() : driverEntity.getStatus());
             return EntityDTOConverter.convertDriverEntityToDTO(repository.save(driverEntity));
         }
         return null;
@@ -68,8 +72,13 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public List<DriverDTO> getAllDrivers() {
-        return repository.findAll().stream().collect(ArrayList::new, (list, driverEntity) -> list.add(EntityDTOConverter.convertDriverEntityToDTO(driverEntity)), ArrayList::addAll);
+    public List<DriverDTO> getAllDriversForSupplier(UUID supplierId) {
+        Optional<List<DriverEntity>> queryResult = repository.findAllBySupplierId(supplierId);
+        if(queryResult.isPresent()){
+            return queryResult.get().stream().map(EntityDTOConverter::convertDriverEntityToDTO).collect(Collectors.toList());
+        }else{
+            return new ArrayList<>();
+        }
     }
 
     @Override

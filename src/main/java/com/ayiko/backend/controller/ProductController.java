@@ -3,6 +3,7 @@ package com.ayiko.backend.controller;
 import com.ayiko.backend.config.JWTTokenProvider;
 import com.ayiko.backend.dto.ProductDTO;
 import com.ayiko.backend.dto.SupplierDTO;
+import com.ayiko.backend.exception.ExceptionHandler;
 import com.ayiko.backend.service.ProductService;
 import com.ayiko.backend.service.SupplierService;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class ProductController {
             ProductDTO savedProduct = productService.addProduct(productDTO);
             return ResponseEntity.ok(savedProduct);
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -74,7 +75,7 @@ public class ProductController {
             validateToken(authorizationHeader);
             return ResponseEntity.ok(productService.getPopularProducts());
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -88,7 +89,7 @@ public class ProductController {
             }
             return ResponseEntity.ok(productById);
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -105,7 +106,7 @@ public class ProductController {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ERROR_INVALID_PRODUCT_ID)).build();
             }
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
     }
 
@@ -120,16 +121,8 @@ public class ProductController {
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
-            return handleException(e);
+            return ExceptionHandler.handleException(e);
         }
-    }
-
-    private ResponseEntity handleException(Exception e){
-        if (e instanceof RuntimeException && (e.getMessage().equals(ERROR_INVALID_TOKEN) || e.getMessage().equals(ERROR_INVALID_SUPPLIER_ID))) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage())).build();
-        }
-        logger.error("Error occurred: {}", e.getMessage(), e);
-        return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage())).build();
     }
 
 }

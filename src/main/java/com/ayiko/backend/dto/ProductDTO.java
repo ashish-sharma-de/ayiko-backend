@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -17,6 +18,7 @@ public class ProductDTO {
     private String unitPrice;
     private String quantity;
     private List<String> imageUrl;
+    private Set<ImageDTO> images;
     private boolean isAvailable;
     private String createdAt;
     private String updatedAt;

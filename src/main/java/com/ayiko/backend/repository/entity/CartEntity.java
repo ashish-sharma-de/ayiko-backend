@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -32,7 +33,10 @@ public class CartEntity {
     private CartPaymentEntity paymentDetails;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<CartItemEntity> items;
+    private Set<CartItemEntity> items;
+
+    @OneToOne
+    private OrderEntity order;
 
     @PrePersist
     protected void onCreate() {
@@ -47,7 +51,7 @@ public class CartEntity {
 
     public void addItem(CartItemEntity item) {
         if(this.items == null){
-            this.items = new ArrayList<>();
+            this.items = new HashSet<>();
         }
         items.add(item);
         item.setCart(this);

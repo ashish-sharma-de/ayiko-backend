@@ -5,12 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.locationtech.jts.geom.Point;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -42,10 +42,16 @@ public class SupplierEntity {
     private Set<ProductEntity> products;
 
     private String profileImageUrl;
-    private String businessImages;
+    private String businessImageUrls;
     private String businessName;
     private String businessDescription;
     private Double rating;
+
+    private Point location;
+
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<SupplierImageEntity> businessImages;
+
 
     @PrePersist
     protected void onCreate() {
