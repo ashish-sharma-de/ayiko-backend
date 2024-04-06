@@ -194,23 +194,23 @@ public class EntityDTOConverter {
     }
 
     public static CartEntity convertCartDTOToEntity(CartDTO dto) {
-        Set<CartItemEntity> items = dto.getItems().stream().map(item -> convertCartItemDTOToEntity(item)).collect(Collectors.toSet());
         CartEntity entity = CartEntity.builder()
                 .id(dto.getId())
                 .customerId(dto.getCustomerId())
                 .supplierId(dto.getSupplierId())
                 .status(dto.getStatus())
-                .items(items)
                 .build();
-        items.forEach(item -> item.setCart(entity));
+        Set<CartItemEntity> items = dto.getItems().stream().map(item -> convertCartItemDTOToEntity(item, entity)).collect(Collectors.toSet());
+        entity.setItems(items);
         return entity;
     }
 
-    public static CartItemEntity convertCartItemDTOToEntity(CartItemDTO itemDTO) {
+    public static CartItemEntity convertCartItemDTOToEntity(CartItemDTO itemDTO, CartEntity cartEntity) {
         return CartItemEntity.builder()
                 .id(itemDTO.getId())
                 .productId(itemDTO.getProductId())
                 .quantity(itemDTO.getQuantity())
+                .cart(cartEntity)
                 .build();
     }
 

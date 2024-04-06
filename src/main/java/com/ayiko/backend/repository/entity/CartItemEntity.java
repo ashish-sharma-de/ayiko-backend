@@ -1,10 +1,7 @@
 package com.ayiko.backend.repository.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -21,6 +18,8 @@ public class CartItemEntity {
     private int quantity;
     @ManyToOne
     @JoinColumn(name = "cart_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private CartEntity cart;
 
 }

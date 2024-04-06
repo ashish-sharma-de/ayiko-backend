@@ -2,13 +2,9 @@ package com.ayiko.backend.repository.entity;
 
 import com.ayiko.backend.dto.cart.CartStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -33,7 +29,9 @@ public class CartEntity {
     private CartPaymentEntity paymentDetails;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<CartItemEntity> items;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<CartItemEntity> items = new HashSet<>();
 
     @OneToOne
     private OrderEntity order;

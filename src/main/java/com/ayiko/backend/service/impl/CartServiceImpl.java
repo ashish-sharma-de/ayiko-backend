@@ -76,7 +76,7 @@ public class CartServiceImpl implements CartService {
             cartEntity.setStatus(cartDTO.getStatus() == null ? cartEntity.getStatus() : cartDTO.getStatus());
             cartEntity.setUpdatedAt(LocalDate.now());
             cartDTO.getItems().forEach(cartItemDTO -> {
-                CartItemEntity cartItemEntity = EntityDTOConverter.convertCartItemDTOToEntity(cartItemDTO);
+                CartItemEntity cartItemEntity = EntityDTOConverter.convertCartItemDTOToEntity(cartItemDTO, cartEntity);
                 cartEntity.getItems().stream().filter(item -> item.getId().equals(cartItemDTO.getId())).findFirst().ifPresent(cartItemEntity1 -> {
                     cartEntity.getItems().remove(cartItemEntity1);
                 });
