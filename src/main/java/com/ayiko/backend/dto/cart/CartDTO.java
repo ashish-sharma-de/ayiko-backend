@@ -22,4 +22,5 @@ public class CartDTO {
     private SupplierDTO supplier;
     private CustomerDTO customer;
     private PaymentDTO paymentDetails;
+    private UUID orderId;
 }

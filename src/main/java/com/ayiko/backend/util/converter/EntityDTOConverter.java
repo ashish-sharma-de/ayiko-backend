@@ -178,6 +178,7 @@ public class EntityDTOConverter {
                 .supplierId(entity.getSupplierId())
                 .status(entity.getStatus())
                 .items(items)
+                .orderId(entity.getOrder() != null ? entity.getOrder().getId() : null)
                 .paymentDetails(PaymentDTO.builder()
                         .customerStatus(entity.getPaymentDetails() != null ? entity.getPaymentDetails().getConfirmationStatus() : null)
                         .supplierStatus(entity.getPaymentDetails() != null ? entity.getPaymentDetails().getReceiptStatus() : null)
