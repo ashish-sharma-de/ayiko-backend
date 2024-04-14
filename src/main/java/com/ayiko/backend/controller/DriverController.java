@@ -108,7 +108,7 @@ public class DriverController {
     }
 
 
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/deactivateDriver")
     public ResponseEntity<DriverDTO> deactivateDriver(@PathVariable UUID id,  @RequestHeader("Authorization") String supplierTokenHeader) {
         try {
             SupplierDTO supplierDTO = getSupplierIdFromToken(supplierTokenHeader);
@@ -124,7 +124,7 @@ public class DriverController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteCustomer(@PathVariable UUID id) {
+    public ResponseEntity<Boolean> deleteDriver(@PathVariable UUID id) {
         try {
 
 
