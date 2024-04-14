@@ -6,10 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -25,6 +22,8 @@ public class OrderPaymentEntity {
     private UUID id;
 
     @OneToOne
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private OrderEntity order;
     private OrderPaymentMethod paymentMethod;
     private OrderPaymentStatus orderPaymentStatus;

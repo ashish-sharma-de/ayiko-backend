@@ -59,7 +59,6 @@ public class DriverController {
     @GetMapping("/getByToken")
     public DriverDTO getDriverByToken(@RequestHeader("Authorization") String authorizationHeader) {
         try {
-
             UUID customerIdFromToken = getDriverIdFromToken(authorizationHeader);
             return driverService.getDriverById(customerIdFromToken);
         } catch (Exception e) {
@@ -103,6 +102,22 @@ public class DriverController {
             }
             DriverDTO updateDriver = driverService.updateDriver(id, driverDTO);
             return ResponseEntity.ok(updateDriver);
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
+        }
+    }
+
+
+    @PostMapping("/{id}")
+    public ResponseEntity<DriverDTO> deactivateDriver(@PathVariable UUID id,  @RequestHeader("Authorization") String supplierTokenHeader) {
+        try {
+            SupplierDTO supplierDTO = getSupplierIdFromToken(supplierTokenHeader);
+            DriverDTO savedDriver = driverService.getDriverById(id);
+            if(savedDriver.getSupplierId().equals(supplierDTO.getId()) == false){
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to deactivate this driver")).build();
+            }
+            driverService.deactivateDriver(id);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ExceptionHandler.handleException(e);
         }

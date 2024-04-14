@@ -2,10 +2,7 @@ package com.ayiko.backend.repository.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -22,5 +19,7 @@ public class OrderItemEntity {
     private int quantity;
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private OrderEntity order;
 }

@@ -270,6 +270,7 @@ public class EntityDTOConverter {
                         .paymentDate(LocalDate.now())
                         .build())
                 .build();
+        orderEntity.getItems().forEach(item -> item.setOrder(orderEntity));
         orderEntity.getPaymentDetails().setOrder(orderEntity);
         return orderEntity;
     }

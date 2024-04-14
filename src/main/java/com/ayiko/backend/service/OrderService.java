@@ -1,5 +1,6 @@
 package com.ayiko.backend.service;
 
+import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.order.OrderDTO;
 import com.ayiko.backend.dto.order.OrderDriverStatus;
 import com.ayiko.backend.repository.entity.CartEntity;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface OrderService {
-    OrderDTO createOrderForCart(CartEntity cartEntity);
+    CartDTO createOrderForCart(CartEntity cartEntity);
 
     OrderDTO getOrderById(UUID orderId);
 

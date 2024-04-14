@@ -1,10 +1,7 @@
 package com.ayiko.backend.repository.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.annotation.CreatedDate;
@@ -50,6 +47,8 @@ public class SupplierEntity {
     private Point location;
 
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<SupplierImageEntity> businessImages;
 
 

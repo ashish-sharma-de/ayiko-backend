@@ -1,5 +1,6 @@
 package com.ayiko.backend.service.impl;
 
+import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.order.OrderDTO;
 import com.ayiko.backend.dto.order.OrderDriverStatus;
 import com.ayiko.backend.dto.order.OrderStatus;
@@ -32,7 +33,7 @@ public class OrderServiceImpl implements OrderService {
     CustomerRepository customerRepository;
 
     @Override
-    public OrderDTO createOrderForCart(CartEntity cartEntity) {
+    public CartDTO createOrderForCart(CartEntity cartEntity) {
         OrderEntity order = EntityDTOConverter.convertCartEntityToOrderEntity(cartEntity);
         CustomerEntity customer = customerRepository.findById(cartEntity.getCustomerId()).get();
         order.setDeliveryLocation(customer.getLocation());
@@ -40,9 +41,8 @@ public class OrderServiceImpl implements OrderService {
         OrderEntity save = orderRepository.save(order);
         cartEntity.setOrder(save);
 
-        cartRepository.save(cartEntity);
-
-        return EntityDTOConverter.convertOrderEntityToDTO(save);
+        CartEntity updatedCart = cartRepository.save(cartEntity);
+        return EntityDTOConverter.convertCartEntityToCartDTO(updatedCart);
     }
 
     @Override

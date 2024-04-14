@@ -158,8 +158,8 @@ public class CartController {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to accept this cart")).build();
             }
             CartEntity cartEntity = cartService.updateCartPaymentReceiptStatus(id, status);
-            OrderDTO orderDTO = orderService.createOrderForCart(cartEntity);
-            return ResponseEntity.ok(orderDTO);
+            CartDTO cartDTO = orderService.createOrderForCart(cartEntity);
+            return ResponseEntity.ok(cartDTO);
         } catch (Exception e) {
             return ExceptionHandler.handleException(e);
         }

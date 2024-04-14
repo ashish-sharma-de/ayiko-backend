@@ -10,6 +10,9 @@ public interface DriverService {
     DriverDTO createDriver(DriverDTO driverDTO);
     DriverDTO updateDriver(UUID id, DriverDTO driverDTO);
     boolean deleteDriver(UUID id);
+
+    boolean deactivateDriver(UUID id);
+
     DriverDTO getDriverById(UUID id);
     List<DriverDTO> getAllDriversForSupplier(UUID id);
 

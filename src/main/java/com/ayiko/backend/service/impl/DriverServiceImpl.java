@@ -65,6 +65,18 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    public boolean deactivateDriver(UUID id){
+        if(repository.existsById(id)){
+            DriverEntity driverEntity = repository.findById(id).get();
+            driverEntity.setActive(false);
+            repository.save(driverEntity);
+            return true;
+        }
+        return false;
+    }
+
+
+    @Override
     public DriverDTO getDriverById(UUID id) {
         DriverEntity driverEntity = repository.findById(id).orElse(null);
         if (driverEntity == null) return null;

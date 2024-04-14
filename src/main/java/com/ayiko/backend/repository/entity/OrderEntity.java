@@ -3,10 +3,7 @@ package com.ayiko.backend.repository.entity;
 import com.ayiko.backend.dto.order.OrderDriverStatus;
 import com.ayiko.backend.dto.order.OrderStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.locationtech.jts.geom.Point;
 
@@ -35,9 +32,13 @@ public class OrderEntity {
     private UUID driverId;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private OrderPaymentEntity paymentDetails;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<OrderItemEntity> items;
 
     private Point deliveryLocation;
