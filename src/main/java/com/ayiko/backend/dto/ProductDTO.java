@@ -20,7 +20,7 @@ public class ProductDTO {
     private String unitPrice;
     private String quantity;
     private List<String> imageUrl;
-    private Set<ImageDTO> images;
+    private List<ImageDTO> images;
     private boolean isAvailable;
     private String createdAt;
     private String updatedAt;
