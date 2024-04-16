@@ -50,15 +50,15 @@ public class ProductServiceImpl implements ProductService {
             productEntity.setCategory(productDTO.getCategory() != null ? productDTO.getCategory() : productEntity.getCategory());
             productEntity.setDescription(productDTO.getDescription() != null ? productDTO.getDescription() : productEntity.getDescription());
             productEntity.setImageUrl(productDTO.getImageUrl() != null ? EntityDTOConverter.imageUrlsToString(productDTO.getImageUrl()) : productEntity.getImageUrl());
-//            productEntity.setImages(productDTO.getImages() != null ? productDTO.getImages().stream().map(imageDTO ->
-//                    ProductImageEntity.builder()
-//                            .imageUrl(imageDTO.getImageUrl())
-//                            .imageType(imageDTO.getImageType())
-//                            .imageTitle(imageDTO.getImageTitle())
-//                            .imageDescription(imageDTO.getImageDescription())
-//                            .product(productEntity)
-//                            .build())
-//                    .collect(Collectors.toSet()) : new HashSet<>());
+            productEntity.setImages(productDTO.getImages() != null ? productDTO.getImages().stream().map(imageDTO ->
+                    ProductImageEntity.builder()
+                            .imageUrl(imageDTO.getImageUrl())
+                            .imageType(imageDTO.getImageType())
+                            .imageTitle(imageDTO.getImageTitle())
+                            .imageDescription(imageDTO.getImageDescription())
+                            .product(productEntity)
+                            .build())
+                    .collect(Collectors.toSet()) : new HashSet<>());
             ProductEntity save = productRepository.save(productEntity);
             return EntityDTOConverter.convertProductEntityToDTO(save);
         }

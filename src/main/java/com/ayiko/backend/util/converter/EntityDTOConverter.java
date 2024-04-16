@@ -145,9 +145,9 @@ public class EntityDTOConverter {
                 .imageUrl(imageUrlsToString(productDTO.getImageUrl()))
                 .category(productDTO.getCategory())
                 .isAvailable(productDTO.isAvailable())
-//                .images(productDTO.getImages() != null ? productDTO.getImages().stream().map(image -> ProductImageEntity.builder().imageTitle(image.getImageTitle())
-//                        .imageDescription(image.getImageDescription()).imageUrl(image.getImageUrl()).build()).collect(Collectors.toSet())
-//                        : new HashSet<>())
+                .images(productDTO.getImages() != null ? productDTO.getImages().stream().map(image -> ProductImageEntity.builder().imageTitle(image.getImageTitle())
+                        .imageDescription(image.getImageDescription()).imageUrl(image.getImageUrl()).build()).collect(Collectors.toSet())
+                        : new HashSet<>())
                 .build();
 
         productEntity.getImages().forEach(image -> image.setProduct(productEntity));
@@ -165,8 +165,8 @@ public class EntityDTOConverter {
                 .category(entity.getCategory())
                 .supplierId(entity.getSupplier().getId())
                 .isAvailable(entity.isAvailable())
-//                .images(entity.getImages().stream().map(image -> ImageDTO.builder().imageTitle(image.getImageTitle())
-//                        .imageDescription(image.getImageDescription()).imageUrl(image.getImageUrl()).build()).collect(Collectors.toList()))
+                .images(entity.getImages().stream().map(image -> ImageDTO.builder().imageTitle(image.getImageTitle())
+                        .imageDescription(image.getImageDescription()).imageUrl(image.getImageUrl()).build()).collect(Collectors.toSet()))
                 .build();
     }
 
