@@ -38,6 +38,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO, @RequestHeader("Authorization") String authorizationHeader) {
         try {
+            logger.info("Adding product", productDTO);
             UUID supplierId = getSupplierIdFromToken(authorizationHeader);
             supplierService.getSupplierById(supplierId);
             productDTO.setSupplierId(supplierId);
