@@ -8,7 +8,6 @@ import com.ayiko.backend.dto.order.*;
 import com.ayiko.backend.repository.entity.*;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -142,10 +141,10 @@ public class EntityDTOConverter {
                 .description(productDTO.getDescription())
                 .unitPrice(productDTO.getUnitPrice())
                 .quantity(productDTO.getQuantity())
-                .imageUrl(imageUrlsToString(productDTO.getImageUrl()))
+                .imageUrl(imageUrlsToString(productDTO.getImageUrlList()))
                 .category(productDTO.getCategory())
                 .isAvailable(productDTO.isAvailable())
-                .images(productDTO.getImages() != null ? productDTO.getImages().stream().map(image -> ProductImageEntity.builder().imageTitle(image.getImageTitle())
+                .images(productDTO.getImageUrl() != null ? productDTO.getImageUrl().stream().map(image -> ProductImageEntity.builder().imageTitle(image.getImageTitle())
                         .imageDescription(image.getImageDescription()).imageUrl(image.getImageUrl()).build()).collect(Collectors.toSet())
                         : new HashSet<>())
                 .build();
@@ -161,11 +160,11 @@ public class EntityDTOConverter {
                 .description(entity.getDescription())
                 .unitPrice(entity.getUnitPrice())
                 .quantity(entity.getQuantity())
-                .imageUrl(imageStringToList(entity.getImageUrl()))
+                .imageUrlList(imageStringToList(entity.getImageUrl()))
                 .category(entity.getCategory())
                 .supplierId(entity.getSupplier().getId())
                 .isAvailable(entity.isAvailable())
-                .images(entity.getImages().stream().map(image -> ImageDTO.builder().imageTitle(image.getImageTitle())
+                .imageUrl(entity.getImages().stream().map(image -> ImageDTO.builder().imageTitle(image.getImageTitle())
                         .imageDescription(image.getImageDescription()).imageUrl(image.getImageUrl()).build()).collect(Collectors.toSet()))
                 .build();
     }

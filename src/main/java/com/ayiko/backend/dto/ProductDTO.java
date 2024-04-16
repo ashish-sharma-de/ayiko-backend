@@ -19,8 +19,8 @@ public class ProductDTO {
     private UUID supplierId;
     private String unitPrice;
     private String quantity;
-    private List<String> imageUrl;
-    private Set<ImageDTO> images;
+    private List<String> imageUrlList;
+    private Set<ImageDTO> imageUrl;
     private boolean isAvailable;
     private String createdAt;
     private String updatedAt;
