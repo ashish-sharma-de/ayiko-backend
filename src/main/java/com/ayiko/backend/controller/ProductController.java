@@ -6,7 +6,6 @@ import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.exception.ExceptionHandler;
 import com.ayiko.backend.service.ProductService;
 import com.ayiko.backend.service.SupplierService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +14,6 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,35 +36,17 @@ public class ProductController {
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @PostMapping
-//    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO, @RequestHeader("Authorization") String authorizationHeader) {
-    public ResponseEntity<?> addProduct(HttpServletRequest request, @RequestParam String someParameter) {
-        StringBuilder payload = new StringBuilder();
-        String line;
+    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO, @RequestHeader("Authorization") String authorizationHeader) {
         try {
-            BufferedReader reader = request.getReader();
-            while ((line = reader.readLine()) != null) {
-                payload.append(line).append('\n');
-            }
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().body("Error reading payload");
+            logger.info("Adding product", productDTO);
+            UUID supplierId = getSupplierIdFromToken(authorizationHeader);
+            supplierService.getSupplierById(supplierId);
+            productDTO.setSupplierId(supplierId);
+            ProductDTO savedProduct = productService.addProduct(productDTO);
+            return ResponseEntity.ok(savedProduct);
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
         }
-
-        // Log the payload
-        logger.info("Received payload: " + payload.toString());
-
-        // Proceed with your original logic if needed or return directly for testing
-        return ResponseEntity.ok().body("Payload received, log for details");
-//
-//        try {
-//            logger.info("Adding product", productDTO);
-//            UUID supplierId = getSupplierIdFromToken(authorizationHeader);
-//            supplierService.getSupplierById(supplierId);
-//            productDTO.setSupplierId(supplierId);
-//            ProductDTO savedProduct = productService.addProduct(productDTO);
-//            return ResponseEntity.ok(savedProduct);
-//        } catch (Exception e) {
-//            return ExceptionHandler.handleException(e);
-//        }
     }
 
     private UUID getSupplierIdFromToken(String authorizationHeader) {
