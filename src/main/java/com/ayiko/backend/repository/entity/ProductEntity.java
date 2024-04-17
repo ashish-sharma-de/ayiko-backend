@@ -32,6 +32,8 @@ public class ProductEntity {
 
     @ManyToOne
     @JoinColumn(name = "supplier_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private SupplierEntity supplier;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
