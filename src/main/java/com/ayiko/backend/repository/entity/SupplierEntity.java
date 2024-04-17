@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,7 +37,7 @@ public class SupplierEntity {
     private LocalDate lastLoginAt;
 
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<ProductEntity> products;
+    private Set<ProductEntity> products = new HashSet<>();
 
     private String profileImageUrl;
     private String businessImageUrls;
@@ -49,7 +50,7 @@ public class SupplierEntity {
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<SupplierImageEntity> businessImages;
+    private Set<SupplierImageEntity> businessImages = new HashSet<>();
 
 
     @PrePersist

@@ -8,6 +8,7 @@ import org.hibernate.annotations.Type;
 import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,7 +40,7 @@ public class OrderEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<OrderItemEntity> items;
+    private Set<OrderItemEntity> items = new HashSet<>();
 
     private Point deliveryLocation;
 

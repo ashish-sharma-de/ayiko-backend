@@ -40,7 +40,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public SupplierDTO updateSupplier(UUID id, SupplierDTO supplierDTO) {
         Optional<SupplierEntity> byId = repository.findById(id);
-        if(byId.isPresent()){
+        if (byId.isPresent()) {
             SupplierEntity supplierEntity = byId.get();
             supplierEntity.setBankAccountNumber(supplierDTO.getBankAccountNumber() != null ? supplierDTO.getBankAccountNumber() : supplierEntity.getBankAccountNumber());
             supplierEntity.setCity(supplierDTO.getCity() != null ? supplierDTO.getCity() : supplierEntity.getCity());
@@ -54,15 +54,19 @@ public class SupplierServiceImpl implements SupplierService {
             supplierEntity.setBusinessDescription(supplierDTO.getBusinessDescription() != null ? supplierDTO.getBusinessDescription() : supplierEntity.getBusinessDescription());
             supplierEntity.setProfileImageUrl(supplierDTO.getProfileImageUrl() != null ? supplierDTO.getProfileImageUrl() : supplierEntity.getProfileImageUrl());
 
-            supplierEntity.setBusinessImages(supplierDTO.getImages() != null ? supplierDTO.getImages().stream().map(imageDTO ->
-                    SupplierImageEntity.builder()
+            if (supplierDTO.getImages() != null) {
+                supplierDTO.getImages().forEach(imageDTO -> {
+                    SupplierImageEntity businessImage = SupplierImageEntity.builder()
                             .isProfilePicture(imageDTO.isProfilePicture())
                             .imageUrl(imageDTO.getImageUrl())
                             .imageDescription(imageDTO.getImageDescription())
                             .imageTitle(imageDTO.getImageTitle())
-                            .supplier(supplierEntity).build())
-                    .collect(Collectors.toSet()) : new HashSet<>());
-            supplierDTO = EntityDTOConverter.convertSupplierEntityToSupplierDTO(repository.save(supplierEntity));
+                            .supplier(supplierEntity).build();
+                    supplierEntity.getBusinessImages().add(businessImage);
+                });
+            }
+            SupplierEntity save = repository.save(supplierEntity);
+            return EntityDTOConverter.convertSupplierEntityToSupplierDTO(save);
         }
         return supplierDTO;
     }

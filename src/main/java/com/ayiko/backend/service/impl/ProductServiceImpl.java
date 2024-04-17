@@ -50,15 +50,18 @@ public class ProductServiceImpl implements ProductService {
             productEntity.setCategory(productDTO.getCategory() != null ? productDTO.getCategory() : productEntity.getCategory());
             productEntity.setDescription(productDTO.getDescription() != null ? productDTO.getDescription() : productEntity.getDescription());
             productEntity.setImageUrl(productDTO.getImageUrlList() != null ? EntityDTOConverter.imageUrlsToString(productDTO.getImageUrlList()) : productEntity.getImageUrl());
-            productEntity.setImages(productDTO.getImageUrl() != null ? productDTO.getImageUrl().stream().map(imageDTO ->
-                    ProductImageEntity.builder()
+            if(productDTO.getImageUrl() != null){
+                productDTO.getImageUrl().forEach(imageDTO -> {
+                    ProductImageEntity productImageEntity = ProductImageEntity.builder()
                             .imageUrl(imageDTO.getImageUrl())
                             .imageType(imageDTO.getImageType())
                             .imageTitle(imageDTO.getImageTitle())
                             .imageDescription(imageDTO.getImageDescription())
                             .product(productEntity)
-                            .build())
-                    .collect(Collectors.toSet()) : new HashSet<>());
+                            .build();
+                    productEntity.getImages().add(productImageEntity);
+                });
+            }
             ProductEntity save = productRepository.save(productEntity);
             return EntityDTOConverter.convertProductEntityToDTO(save);
         }
