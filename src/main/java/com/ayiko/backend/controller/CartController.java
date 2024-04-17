@@ -77,7 +77,7 @@ public class CartController {
     @GetMapping("/{id}")
     public ResponseEntity<CartDTO> getCart(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
         try {
-            getCustomerIdFromToken(authorizationHeader);
+            validateToken(authorizationHeader);
             CartDTO cartDTO = cartService.getCartById(id);
             if (cartDTO == null) {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ERROR_INVALID_CART_ID)).build();
