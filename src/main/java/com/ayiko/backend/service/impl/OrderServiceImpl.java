@@ -47,17 +47,30 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO getOrderById(UUID orderId) {
-        return EntityDTOConverter.convertOrderEntityToDTO(orderRepository.findById(orderId).orElse(null));
+        OrderEntity order = orderRepository.findById(orderId).orElse(null);
+        if(order == null) {
+            return null;
+        }
+        return getOrderDTO(order);
+    }
+    private OrderDTO getOrderDTO(OrderEntity orderEntity){
+        CartEntity cart = cartRepository.findByOrder(orderEntity);
+        CartDTO cartDTO = EntityDTOConverter.convertCartEntityToCartDTO(cart);
+        return EntityDTOConverter.convertOrderEntityToDTO(orderEntity, cartDTO);
     }
 
     @Override
     public List<OrderDTO> getOrdersForSupplier(UUID supplierId) {
-        return orderRepository.findAllBySupplierId(supplierId).stream().map(EntityDTOConverter::convertOrderEntityToDTO).collect(Collectors.toList());
+        return orderRepository.findAllBySupplierId(supplierId).stream().map(orderEntity ->{
+            return getOrderDTO(orderEntity);
+        }).collect(Collectors.toList());
     }
 
     @Override
     public List<OrderDTO> getOrdersForCustomer(UUID customerId) {
-        return orderRepository.findAllByCustomerId(customerId).stream().map(EntityDTOConverter::convertOrderEntityToDTO).collect(Collectors.toList());
+        return orderRepository.findAllByCustomerId(customerId).stream().map(orderEntity ->{
+            return getOrderDTO(orderEntity);
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -70,7 +83,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDTO> getOrdersForDriver(UUID driverId) {
-        return orderRepository.findAllByDriverId(driverId).stream().map(EntityDTOConverter::convertOrderEntityToDTO).collect(Collectors.toList());
+        return orderRepository.findAllByDriverId(driverId).stream().map(orderEntity ->{
+            return getOrderDTO(orderEntity);
+        }).collect(Collectors.toList());
     }
 
     @Override

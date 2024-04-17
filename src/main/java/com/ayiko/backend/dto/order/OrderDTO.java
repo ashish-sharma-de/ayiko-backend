@@ -1,6 +1,7 @@
 package com.ayiko.backend.dto.order;
 
 import com.ayiko.backend.dto.DriverDTO;
+import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.repository.entity.DriverStatus;
 import lombok.Builder;
 import lombok.Data;
@@ -29,4 +30,6 @@ public class OrderDTO {
     private OrderPaymentDTO paymentDetails;
 
     private Set<OrderItemDTO> items;
+
+    private CartDTO cart;
 }

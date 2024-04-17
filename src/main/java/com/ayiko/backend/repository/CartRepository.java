@@ -2,6 +2,7 @@ package com.ayiko.backend.repository;
 
 import com.ayiko.backend.dto.cart.CartStatus;
 import com.ayiko.backend.repository.entity.CartEntity;
+import com.ayiko.backend.repository.entity.OrderEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface CartRepository  extends JpaRepository<CartEntity, UUID> {
     List<CartEntity> findAllBySupplierId(UUID supplierId);
 
     List<CartEntity> findAllBySupplierIdAndStatus(UUID customerId, CartStatus status);
+
+    CartEntity findByOrder(OrderEntity orderId);
 }

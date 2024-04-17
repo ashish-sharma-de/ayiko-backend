@@ -274,7 +274,7 @@ public class EntityDTOConverter {
         return orderEntity;
     }
 
-    public static OrderDTO convertOrderEntityToDTO(OrderEntity orderEntity) {
+    public static OrderDTO convertOrderEntityToDTO(OrderEntity orderEntity, CartDTO cart) {
         return OrderDTO.builder()
                 .id(orderEntity.getId())
                 .customerId(orderEntity.getCustomerId())
@@ -290,6 +290,7 @@ public class EntityDTOConverter {
                         .paymentDate(orderEntity.getPaymentDetails().getPaymentDate())
                         .build())
                 .driverId(orderEntity.getDriverId())
+                .cart(cart)
                 .build();
     }
 }
