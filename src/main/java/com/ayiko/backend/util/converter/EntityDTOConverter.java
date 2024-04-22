@@ -234,6 +234,9 @@ public class EntityDTOConverter {
     }
 
     public static DriverDTO convertDriverEntityToDTO(DriverEntity entity) {
+        if(entity == null) {
+            return null;
+        }
         return DriverDTO.builder()
                 .id(entity.getId())
                 .email(entity.getEmail())
@@ -275,7 +278,7 @@ public class EntityDTOConverter {
     }
 
     public static OrderDTO convertOrderEntityToDTO(OrderEntity orderEntity, CartDTO cart) {
-        return OrderDTO.builder()
+        OrderDTO orderDTO = OrderDTO.builder()
                 .id(orderEntity.getId())
                 .customerId(orderEntity.getCustomerId())
                 .supplierId(orderEntity.getSupplierId())
@@ -292,5 +295,9 @@ public class EntityDTOConverter {
                 .driverId(orderEntity.getDriverId())
                 .cart(cart)
                 .build();
+        if(orderEntity.getDriverId() != null && orderEntity.getSupplierId().equals(orderEntity.getDriverId())) {
+            orderDTO.setAssignedToSelf(true);
+        }
+        return orderDTO;
     }
 }

@@ -32,4 +32,6 @@ public class OrderDTO {
     private Set<OrderItemDTO> items;
 
     private CartDTO cart;
+
+    private boolean isAssignedToSelf;
 }
