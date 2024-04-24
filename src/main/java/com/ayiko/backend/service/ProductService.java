@@ -1,5 +1,6 @@
 package com.ayiko.backend.service;
 
+import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.ProductDTO;
 
 import java.util.List;
@@ -14,4 +15,7 @@ public interface ProductService {
     List<ProductDTO> getAllProductsForSupplier(UUID supplierId);
 
     List<ProductDTO> getPopularProducts();
+    boolean deleteProductImage(UUID id, UUID imageId);
+
+    public boolean addProductImage(UUID id, ImageDTO imageDTO);
 }

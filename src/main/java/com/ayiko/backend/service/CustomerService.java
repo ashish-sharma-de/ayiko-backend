@@ -2,6 +2,7 @@ package com.ayiko.backend.service;
 
 import com.ayiko.backend.dto.CustomerDTO;
 import com.ayiko.backend.dto.LoginDTO;
+import com.ayiko.backend.dto.cart.AddressDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,4 +16,6 @@ public interface CustomerService {
     boolean resetPassword(UUID id, String currentPassword, String newPassword);
     String authenticateSupplier(LoginDTO loginDTO);
     CustomerDTO getCustomerByEmail(String email);
+    void addAddress(UUID customerId, AddressDTO addressDTO);
+    void deleteAddress(UUID customerId, UUID addressId);
 }

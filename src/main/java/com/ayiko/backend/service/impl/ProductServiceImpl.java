@@ -1,5 +1,6 @@
 package com.ayiko.backend.service.impl;
 
+import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.ProductDTO;
 import com.ayiko.backend.repository.ProductRepository;
 import com.ayiko.backend.repository.SupplierRepository;
@@ -12,10 +13,7 @@ import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,5 +88,40 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> getPopularProducts() {
         return productRepository.findAll().stream().map(EntityDTOConverter::convertProductEntityToDTO).toList();
+    }
+
+    @Override
+    public boolean deleteProductImage(UUID id, UUID imageId) {
+        Optional<ProductEntity> byId = productRepository.findById(id);
+        if (byId.isPresent()) {
+            ProductEntity productEntity = byId.get();
+            Set<ProductImageEntity> images = productEntity.getImages();
+            Optional<ProductImageEntity> imageEntity = images.stream().filter(productImageEntity -> productImageEntity.getId().equals(imageId)).findFirst();
+            if(imageEntity.isPresent()){
+                images.remove(imageEntity.get());
+                productEntity.setImages(images);
+                productRepository.save(productEntity);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addProductImage(UUID id, ImageDTO imageDTO) {
+        Optional<ProductEntity> byId = productRepository.findById(id);
+        if (byId.isPresent()) {
+            ProductEntity productEntity = byId.get();
+            productEntity.getImages().add(ProductImageEntity.builder()
+                    .imageUrl(imageDTO.getImageUrl())
+                    .imageType(imageDTO.getImageType())
+                    .imageTitle(imageDTO.getImageTitle())
+                    .imageDescription(imageDTO.getImageDescription())
+                    .product(productEntity)
+                    .build());
+            productRepository.save(productEntity);
+            return true;
+        }
+        return false;
     }
 }

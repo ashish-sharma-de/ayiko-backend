@@ -26,6 +26,7 @@ public class ProductEntity {
     private String quantity;
     private String imageUrl;
     private boolean isAvailable;
+    private String productCategory;
     @CreatedDate
     private LocalDate createdAt;
     @LastModifiedDate

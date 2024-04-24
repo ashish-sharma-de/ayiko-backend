@@ -3,6 +3,7 @@ package com.ayiko.backend.service.impl;
 import com.ayiko.backend.config.JWTTokenProvider;
 import com.ayiko.backend.dto.CustomerDTO;
 import com.ayiko.backend.dto.LoginDTO;
+import com.ayiko.backend.dto.cart.AddressDTO;
 import com.ayiko.backend.repository.CustomerRepository;
 import com.ayiko.backend.repository.entity.CustomerEntity;
 import com.ayiko.backend.repository.entity.SupplierEntity;
@@ -92,6 +93,22 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO getCustomerByEmail(String email) {
         return repository.findByEmailAddress(email).map(EntityDTOConverter::convertCustomerEntityToCustomerDTO).orElse(null);
     }
+    @Override
+    public void addAddress(UUID customerId, AddressDTO addressDTO) {
+        CustomerEntity customer = repository.findById(customerId).orElse(null);
+        if (customer != null) {
+            customer.getDeliveryAddresses().add(EntityDTOConverter.convertAddressDTOToAddressEntity(addressDTO));
+            repository.save(customer);
+        }
+    }
 
+    @Override
+    public void deleteAddress(UUID customerId, UUID addressId) {
+        CustomerEntity customer = repository.findById(customerId).orElse(null);
+        if (customer != null) {
+            customer.getDeliveryAddresses().removeIf(addressEntity -> addressEntity.getId().equals(addressId));
+            repository.save(customer);
+        }
+    }
 
 }

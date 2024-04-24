@@ -1,6 +1,7 @@
 package com.ayiko.backend.controller;
 
 import com.ayiko.backend.config.JWTTokenProvider;
+import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.ProductDTO;
 import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.exception.ExceptionHandler;
@@ -117,6 +118,36 @@ public class ProductController {
             getSupplierIdFromToken(authorizationHeader);
             boolean deleted = productService.deleteProduct(id);
             if (deleted) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
+        }
+    }
+
+    @DeleteMapping("/{id}/deleteImage/{imageId}")
+    public ResponseEntity<Void> deleteProductImage(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader, @PathVariable UUID imageId) {
+        try {
+            getSupplierIdFromToken(authorizationHeader);
+            boolean deleted = productService.deleteProductImage(id, imageId);
+            if (deleted) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
+        }
+    }
+
+    @PostMapping("/{id}/addImage")
+    public ResponseEntity<Void> addProductImage(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader, @RequestBody ImageDTO imageDTO) {
+        try {
+            getSupplierIdFromToken(authorizationHeader);
+            boolean isAdded = productService.addProductImage(id, imageDTO);
+            if (isAdded) {
                 return ResponseEntity.ok().build();
             } else {
                 return ResponseEntity.notFound().build();

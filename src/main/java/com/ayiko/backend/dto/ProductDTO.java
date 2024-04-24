@@ -24,5 +24,6 @@ public class ProductDTO {
     private boolean isAvailable;
     private String createdAt;
     private String updatedAt;
+    private String productCategory;
 
 }

@@ -1,6 +1,7 @@
 package com.ayiko.backend.controller;
 
 import com.ayiko.backend.config.JWTTokenProvider;
+import com.ayiko.backend.dto.cart.AddressDTO;
 import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartStatus;
 import com.ayiko.backend.dto.CustomerDTO;
@@ -115,6 +116,36 @@ public class CustomerController {
             return ResponseEntity.ok(cartService.getCartsByCustomerId(customerId, status));
 
 
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
+        }
+    }
+
+    @PostMapping("/{customerId}/addAddress")
+    public ResponseEntity<String> addAddress(@PathVariable UUID customerId, @RequestHeader("Authorization") String authorizationHeader, @RequestBody AddressDTO addressDTO) {
+        try {
+            UUID customerById = getCustomerIdFromToken(authorizationHeader);
+            if (!customerById.equals(customerId)) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to access this resource")).build();
+            }
+            addressDTO.setOwnerId(customerId);
+            addressDTO.setOwnerType("CUSTOMER");
+            customerService.addAddress(customerId, addressDTO);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
+        }
+    }
+
+    @DeleteMapping("/{customerId}/deleteAddress/{addressId}")
+    public ResponseEntity<String> deleteAddress(@PathVariable UUID customerId, @RequestHeader("Authorization") String authorizationHeader, @PathVariable UUID addressId) {
+        try {
+            UUID customerById = getCustomerIdFromToken(authorizationHeader);
+            if (!customerById.equals(customerId)) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to access this resource")).build();
+            }
+            customerService.deleteAddress(customerId, addressId);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ExceptionHandler.handleException(e);
         }

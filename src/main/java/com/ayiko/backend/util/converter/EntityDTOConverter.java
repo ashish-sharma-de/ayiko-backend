@@ -1,6 +1,7 @@
 package com.ayiko.backend.util.converter;
 
 import com.ayiko.backend.dto.*;
+import com.ayiko.backend.dto.cart.AddressDTO;
 import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartItemDTO;
 import com.ayiko.backend.dto.cart.PaymentDTO;
@@ -143,6 +144,7 @@ public class EntityDTOConverter {
                 .quantity(productDTO.getQuantity())
                 .imageUrl(imageUrlsToString(productDTO.getImageUrlList()))
                 .category(productDTO.getCategory())
+                .productCategory(productDTO.getProductCategory())
                 .isAvailable(productDTO.isAvailable())
                 .images(productDTO.getImageUrl() != null ? productDTO.getImageUrl().stream().map(image -> ProductImageEntity.builder().imageTitle(image.getImageTitle())
                         .imageDescription(image.getImageDescription()).imageUrl(image.getImageUrl()).build()).collect(Collectors.toSet())
@@ -164,7 +166,8 @@ public class EntityDTOConverter {
                 .category(entity.getCategory())
                 .supplierId(entity.getSupplier().getId())
                 .isAvailable(entity.isAvailable())
-                .imageUrl(entity.getImages().stream().map(image -> ImageDTO.builder().imageTitle(image.getImageTitle())
+                .productCategory(entity.getProductCategory())
+                .imageUrl(entity.getImages().stream().map(image -> ImageDTO.builder().imageTitle(image.getImageTitle()).id(image.getId())
                         .imageDescription(image.getImageDescription()).imageUrl(image.getImageUrl()).build()).collect(Collectors.toSet()))
                 .build();
     }
@@ -299,5 +302,20 @@ public class EntityDTOConverter {
             orderDTO.setAssignedToSelf(true);
         }
         return orderDTO;
+    }
+
+    public static AddressEntity convertAddressDTOToAddressEntity(AddressDTO addressDTO) {
+        return AddressEntity.builder()
+                .id(addressDTO.getId())
+                .addressLine1(addressDTO.getAddressLine1())
+                .addressLine2(addressDTO.getAddressLine2())
+                .city(addressDTO.getCity())
+                .postalCode(addressDTO.getPostalCode())
+                .state(addressDTO.getState())
+                .country(addressDTO.getCountry())
+                .isDefault(addressDTO.isDefault())
+                .ownerId(addressDTO.getOwnerId())
+                .ownerType(addressDTO.getOwnerType())
+                .build();
     }
 }
