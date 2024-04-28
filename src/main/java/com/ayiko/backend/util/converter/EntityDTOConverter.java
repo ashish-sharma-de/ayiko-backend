@@ -51,6 +51,9 @@ public class EntityDTOConverter {
     }
 
     public static CustomerDTO convertCustomerEntityToCustomerDTO(CustomerEntity entity) {
+        if(entity == null) {
+            return null;
+        }
         return CustomerDTO.builder()
                 .id(entity.getId())
                 .emailAddress(entity.getEmailAddress())
@@ -103,6 +106,9 @@ public class EntityDTOConverter {
     }
 
     public static SupplierDTO convertSupplierEntityToSupplierDTO(SupplierEntity supplierEntity) {
+        if(supplierEntity == null) {
+            return null;
+        }
         return SupplierDTO.builder()
                 .id(supplierEntity.getId())
                 .bankAccountNumber(supplierEntity.getBankAccountNumber())
@@ -156,6 +162,9 @@ public class EntityDTOConverter {
     }
 
     public static ProductDTO convertProductEntityToDTO(ProductEntity entity) {
+        if(entity == null) {
+            return null;
+        }
         return ProductDTO.builder()
                 .id(entity.getId())
                 .name(entity.getName())
@@ -173,7 +182,7 @@ public class EntityDTOConverter {
     }
 
     public static CartDTO convertCartEntityToCartDTO(CartEntity entity) {
-        Set<CartItemDTO> items = entity.getItems().stream().map(item -> convertCartItemEntityToDTO(item)).collect(Collectors.toSet());
+        Set<CartItemDTO> items = entity.getItems().stream().map(EntityDTOConverter::convertCartItemEntityToDTO).collect(Collectors.toSet());
         return CartDTO.builder()
                 .id(entity.getId())
                 .customerId(entity.getCustomerId())
@@ -202,6 +211,7 @@ public class EntityDTOConverter {
                 .customerId(dto.getCustomerId())
                 .supplierId(dto.getSupplierId())
                 .status(dto.getStatus())
+                .deliveryAddressId(dto.getDeliveryAddress() != null ? dto.getDeliveryAddress().getId() : null)
                 .build();
         Set<CartItemEntity> items = dto.getItems().stream().map(item -> convertCartItemDTOToEntity(item, entity)).collect(Collectors.toSet());
         entity.setItems(items);
@@ -296,6 +306,9 @@ public class EntityDTOConverter {
                         .paymentDate(orderEntity.getPaymentDetails().getPaymentDate())
                         .build())
                 .driverId(orderEntity.getDriverId())
+                .driverStatus(orderEntity.getDriverStatus())
+                .isAssignedToSelf(false)
+                .deliveryAddress(cart.getDeliveryAddress())
                 .cart(cart)
                 .build();
         if(orderEntity.getDriverId() != null && orderEntity.getSupplierId().equals(orderEntity.getDriverId())) {
@@ -316,6 +329,21 @@ public class EntityDTOConverter {
                 .isDefault(addressDTO.isDefault())
                 .ownerId(addressDTO.getOwnerId())
                 .ownerType(addressDTO.getOwnerType())
+                .build();
+    }
+
+    public static AddressDTO convertAddressEntityToDTO(AddressEntity entity) {
+        return AddressDTO.builder()
+                .id(entity.getId())
+                .addressLine1(entity.getAddressLine1())
+                .addressLine2(entity.getAddressLine2())
+                .city(entity.getCity())
+                .postalCode(entity.getPostalCode())
+                .state(entity.getState())
+                .country(entity.getCountry())
+                .isDefault(entity.isDefault())
+                .ownerId(entity.getOwnerId())
+                .ownerType(entity.getOwnerType())
                 .build();
     }
 }

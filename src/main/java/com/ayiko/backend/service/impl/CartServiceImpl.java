@@ -38,12 +38,18 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private AddressRepository addressRepository;
+
     private CartDTO convertCartEntityToCartDTO(CartEntity entity){
         CartDTO dto = EntityDTOConverter.convertCartEntityToCartDTO(entity);
         dto.getItems().forEach(cartItemDTO -> {
             ProductDTO productDTO = EntityDTOConverter.convertProductEntityToDTO(productRepository.findById(cartItemDTO.getProductId()).orElse(null));
             cartItemDTO.setProduct(productDTO);
         });
+        if(entity.getDeliveryAddressId() != null){
+            addressRepository.findById(entity.getDeliveryAddressId()).ifPresent(addressEntity -> dto.setDeliveryAddress(EntityDTOConverter.convertAddressEntityToDTO(addressEntity)));
+        }
         dto.setSupplier(EntityDTOConverter.convertSupplierEntityToSupplierDTO(supplierRepository.findById(dto.getSupplierId()).orElse(null)));
         dto.setCustomer(EntityDTOConverter.convertCustomerEntityToCustomerDTO(customerRepository.findById(dto.getCustomerId()).orElse(null)));
         return dto;

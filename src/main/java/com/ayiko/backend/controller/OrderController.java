@@ -42,7 +42,7 @@ public class OrderController {
     public ResponseEntity<OrderDTO> getOrder(@PathVariable UUID id) {
         try {
             OrderDTO order = orderService.getOrderById(id);
-            if(order == null) {
+            if (order == null) {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ExceptionHandler.ERROR_INVALID_ID)).build();
             }
             return ResponseEntity.ok(order);
@@ -52,98 +52,103 @@ public class OrderController {
     }
 
     @GetMapping("/supplier")
-    public ResponseEntity<List<OrderDTO>> getOrdersForSupplier(@RequestHeader("Authorization") String authorizationHeader){
+    public ResponseEntity<List<OrderDTO>> getOrdersForSupplier(@RequestHeader("Authorization") String authorizationHeader) {
         try {
             SupplierDTO supplierDTO = getSupplierIdFromToken(authorizationHeader);
             return ResponseEntity.ok(orderService.getOrdersForSupplier(supplierDTO.getId()));
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ExceptionHandler.handleException(e);
         }
     }
 
     @GetMapping("/customer")
-    public ResponseEntity<List<OrderDTO>> getOrdersForCustomer(@RequestHeader("Authorization") String authorizationHeader){
+    public ResponseEntity<List<OrderDTO>> getOrdersForCustomer(@RequestHeader("Authorization") String authorizationHeader) {
         try {
             CustomerDTO customerDTO = getCustomerIdFromToken(authorizationHeader);
             return ResponseEntity.ok(orderService.getOrdersForCustomer(customerDTO.getId()));
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ExceptionHandler.handleException(e);
         }
     }
 
     @GetMapping("/driver")
-    public ResponseEntity<List<OrderDTO>> getOrdersForDriver(@RequestHeader("Authorization") String authorizationHeader){
+    public ResponseEntity<List<OrderDTO>> getOrdersForDriver(@RequestHeader("Authorization") String authorizationHeader) {
         try {
             DriverDTO driverDTO = getDriverIdFromToken(authorizationHeader);
             return ResponseEntity.ok(orderService.getOrdersForDriver(driverDTO.getId()));
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ExceptionHandler.handleException(e);
         }
     }
 
     @PostMapping("/{orderId}/assignToSelf")
     public ResponseEntity assignToSelf(@RequestHeader("Authorization") String authorizationHeader,
-                                                       @PathVariable UUID orderId){
+                                       @PathVariable UUID orderId) {
         try {
             SupplierDTO supplierDTO = getSupplierIdFromToken(authorizationHeader);
             orderService.assignDriverToOrder(supplierDTO.getId(), orderId);
             return ResponseEntity.ok().build();
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ExceptionHandler.handleException(e);
         }
     }
 
     @PostMapping("/{orderId}/assignDriver/{driverId}")
     public ResponseEntity assignToDriver(@RequestHeader("Authorization") String authorizationHeader,
-                                                       @PathVariable UUID orderId, @PathVariable UUID driverId){
+                                         @PathVariable UUID orderId, @PathVariable UUID driverId) {
         try {
             validateToken(authorizationHeader);
             if (driverService.getDriverById(driverId) == null)
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ExceptionHandler.ERROR_INVALID_ID)).build();
-            if(orderService.getOrderById(orderId) == null)
+            if (orderService.getOrderById(orderId) == null)
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ExceptionHandler.ERROR_INVALID_ID)).build();
 
             orderService.assignDriverToOrder(driverId, orderId);
             return ResponseEntity.ok().build();
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ExceptionHandler.handleException(e);
         }
     }
 
     @PostMapping("/{orderId}/driverAccepted")
     public ResponseEntity driverAccepted(@RequestHeader("Authorization") String authorizationHeader,
-                                         @PathVariable UUID orderId){
+                                         @PathVariable UUID orderId) {
         return updateDriverStatusForOrder(authorizationHeader, orderId, OrderDriverStatus.DRIVER_ACCEPTED);
     }
 
     @PostMapping("/{orderId}/driverRejected")
     public ResponseEntity driverRejected(@RequestHeader("Authorization") String authorizationHeader,
-                                         @PathVariable UUID orderId){
+                                         @PathVariable UUID orderId) {
         return updateDriverStatusForOrder(authorizationHeader, orderId, OrderDriverStatus.DRIVER_REJECTED);
     }
 
     @PostMapping("/{orderId}/startDelivery")
     public ResponseEntity startDelivery(@RequestHeader("Authorization") String authorizationHeader,
-                                         @PathVariable UUID orderId){
+                                        @PathVariable UUID orderId) {
         return updateDriverStatusForOrder(authorizationHeader, orderId, OrderDriverStatus.DRIVER_DISPATCHED);
     }
 
     @PostMapping("/{orderId}/completeDelivery")
     public ResponseEntity completeDelivery(@RequestHeader("Authorization") String authorizationHeader,
-                                        @PathVariable UUID orderId){
+                                           @PathVariable UUID orderId) {
         return updateDriverStatusForOrder(authorizationHeader, orderId, OrderDriverStatus.DELIVERY_COMPLETED);
     }
 
-    private ResponseEntity updateDriverStatusForOrder(String authorizationHeader, UUID orderId, OrderDriverStatus driverStatus){try {
-        DriverDTO driverDTO = getDriverIdFromToken(authorizationHeader);
-        OrderDTO order = orderService.getOrderById(orderId);
-        if(driverDTO.getId().equals(order.getDriverId())) {
-            orderService.updateDriverStatus(driverStatus, orderId);
-            return ResponseEntity.ok().build();
-        }else {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "DriverId doesn't match assigned Driver")).build();
-        }
-        }catch (Exception e) {
+    private ResponseEntity<OrderDTO> updateDriverStatusForOrder(String authorizationHeader, UUID orderId, OrderDriverStatus driverStatus) {
+        try {
+            OrderDTO order = orderService.getOrderById(orderId);
+            if (order.isAssignedToSelf()) {
+                orderService.updateDriverStatus(driverStatus, orderId);
+                return ResponseEntity.ok(orderService.getOrderById(orderId));
+            }
+            DriverDTO driverDTO = getDriverIdFromToken(authorizationHeader);
+            if (driverDTO.getId().equals(order.getDriverId())) {
+                orderService.updateDriverStatus(driverStatus, orderId);
+                return ResponseEntity.ok(orderService.getOrderById(orderId));
+            } else {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "DriverId doesn't match assigned Driver")).build();
+            }
+        } catch (Exception e) {
             return ExceptionHandler.handleException(e);
         }
     }

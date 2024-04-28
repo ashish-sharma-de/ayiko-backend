@@ -1,6 +1,7 @@
 package com.ayiko.backend.dto.order;
 
 import com.ayiko.backend.dto.DriverDTO;
+import com.ayiko.backend.dto.cart.AddressDTO;
 import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.repository.entity.DriverStatus;
 import lombok.Builder;
@@ -34,4 +35,6 @@ public class OrderDTO {
     private CartDTO cart;
 
     private boolean isAssignedToSelf;
+
+    private AddressDTO deliveryAddress;
 }

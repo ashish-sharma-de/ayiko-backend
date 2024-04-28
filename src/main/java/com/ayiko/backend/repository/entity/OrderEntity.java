@@ -42,7 +42,7 @@ public class OrderEntity {
     @EqualsAndHashCode.Exclude
     private Set<OrderItemEntity> items = new HashSet<>();
 
-    private Point deliveryLocation;
+    private UUID deliveryAddressId;
 
     @PrePersist
     protected void onCreate() {

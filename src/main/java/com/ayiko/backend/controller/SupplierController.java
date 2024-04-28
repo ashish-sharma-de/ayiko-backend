@@ -1,12 +1,9 @@
 package com.ayiko.backend.controller;
 
 import com.ayiko.backend.config.JWTTokenProvider;
-import com.ayiko.backend.dto.CustomerDTO;
-import com.ayiko.backend.dto.ProductDTO;
+import com.ayiko.backend.dto.*;
 import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartStatus;
-import com.ayiko.backend.dto.LoginDTO;
-import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.exception.ExceptionHandler;
 import com.ayiko.backend.service.CartService;
 import com.ayiko.backend.service.ProductService;
@@ -111,6 +108,27 @@ public class SupplierController {
         }
         String token = supplierService.authenticateSupplier(loginDTO);
         return token != null ? ResponseEntity.ok(token) : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    @PostMapping("/{id}/addBusinessImage")
+    public ResponseEntity<String> addBusinessImage(@PathVariable UUID id, @RequestBody ImageDTO imageDTO) {
+        SupplierDTO supplierById = supplierService.getSupplierById(id);
+        if (supplierById == null) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ERROR_INVALID_ID)).build();
+        }
+        supplierService.addBusinessImage(id, imageDTO);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @DeleteMapping("/deleteBusinessImage")
+    public ResponseEntity<String> deleteBusinessImage(@PathVariable UUID id, @RequestBody ImageDTO imageDTO) {
+        SupplierDTO supplierById = supplierService.getSupplierById(id);
+        if (supplierById == null) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ERROR_INVALID_ID)).build();
+        }
+        supplierService.deleteBusinessImage(id, imageDTO);
+        return ResponseEntity.ok().build();
     }
 
     private UUID getSupplierIdFromToken(String token) {

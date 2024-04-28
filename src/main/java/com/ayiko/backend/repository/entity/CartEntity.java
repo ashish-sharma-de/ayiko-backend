@@ -38,6 +38,8 @@ public class CartEntity {
     @OneToOne
     private OrderEntity order;
 
+    private UUID deliveryAddressId;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDate.now();

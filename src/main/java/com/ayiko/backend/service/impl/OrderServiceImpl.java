@@ -39,17 +39,27 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    AddressRepository addressRepository;
+
     @Override
     public CartDTO createOrderForCart(CartEntity cartEntity) {
         OrderEntity order = EntityDTOConverter.convertCartEntityToOrderEntity(cartEntity);
-        CustomerEntity customer = customerRepository.findById(cartEntity.getCustomerId()).get();
-        order.setDeliveryLocation(customer.getLocation());
+        CustomerEntity customer = customerRepository.findById(cartEntity.getCustomerId()).orElse(null);
+        if (customer == null) {
+            throw new RuntimeException("Customer not found");
+        }
+        order.setDeliveryAddressId(cartEntity.getDeliveryAddressId());
 
         OrderEntity save = orderRepository.save(order);
         cartEntity.setOrder(save);
 
         CartEntity updatedCart = cartRepository.save(cartEntity);
-        return EntityDTOConverter.convertCartEntityToCartDTO(updatedCart);
+        CartDTO cartDTO = EntityDTOConverter.convertCartEntityToCartDTO(updatedCart);
+        if(updatedCart.getDeliveryAddressId() != null){
+            addressRepository.findById(updatedCart.getDeliveryAddressId()).ifPresent(addressEntity -> cartDTO.setDeliveryAddress(EntityDTOConverter.convertAddressEntityToDTO(addressEntity)));
+        }
+        return cartDTO;
     }
 
     @Override
@@ -66,7 +76,9 @@ public class OrderServiceImpl implements OrderService {
         CartDTO cartDTO = EntityDTOConverter.convertCartEntityToCartDTO(cart);
         cartDTO.setSupplier(EntityDTOConverter.convertSupplierEntityToSupplierDTO(supplierRepository.findById(cartDTO.getSupplierId()).orElse(null)));
         cartDTO.setCustomer(EntityDTOConverter.convertCustomerEntityToCustomerDTO(customerRepository.findById(cartDTO.getCustomerId()).orElse(null)));
-
+        if(cart.getDeliveryAddressId() != null){
+            addressRepository.findById(cart.getDeliveryAddressId()).ifPresent(addressEntity -> cartDTO.setDeliveryAddress(EntityDTOConverter.convertAddressEntityToDTO(addressEntity)));
+        }
         cartDTO.getItems().forEach(cartItemDTO -> {
             ProductDTO productDTO = EntityDTOConverter.convertProductEntityToDTO(productRepository.findById(cartItemDTO.getProductId()).orElse(null));
             cartItemDTO.setProduct(productDTO);
@@ -83,16 +95,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDTO> getOrdersForSupplier(UUID supplierId) {
-        return orderRepository.findAllBySupplierId(supplierId).stream().map(orderEntity -> {
-            return getOrderDTO(orderEntity);
-        }).collect(Collectors.toList());
+        return orderRepository.findAllBySupplierIdOrderByCreatedAtDesc(supplierId).stream().map(this::getOrderDTO).collect(Collectors.toList());
     }
 
     @Override
     public List<OrderDTO> getOrdersForCustomer(UUID customerId) {
-        return orderRepository.findAllByCustomerId(customerId).stream().map(orderEntity -> {
-            return getOrderDTO(orderEntity);
-        }).collect(Collectors.toList());
+        return orderRepository.findAllByCustomerIdOrderByCreatedAtDesc(customerId).stream().map(this::getOrderDTO).collect(Collectors.toList());
     }
 
     //TODO How to identify the driver if the driver is suppiler or driver
@@ -106,9 +114,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDTO> getOrdersForDriver(UUID driverId) {
-        return orderRepository.findAllByDriverId(driverId).stream().map(orderEntity -> {
-            return getOrderDTO(orderEntity);
-        }).collect(Collectors.toList());
+        return orderRepository.findAllByDriverIdOrderByCreatedAtDesc(driverId).stream().map(this::getOrderDTO).collect(Collectors.toList());
     }
 
     @Override

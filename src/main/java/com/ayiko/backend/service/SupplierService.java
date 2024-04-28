@@ -1,4 +1,5 @@
 package com.ayiko.backend.service;
+import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.dto.SupplierDTO;
 import java.util.List;
@@ -16,4 +17,8 @@ public interface SupplierService {
     boolean resetPassword(UUID id, String currentPassword, String newPassword);
 
     String authenticateSupplier(LoginDTO loginDTO);
+
+    void addBusinessImage(UUID supplierId, ImageDTO imageDTO);
+
+    void deleteBusinessImage(UUID id, ImageDTO imageDTO);
 }

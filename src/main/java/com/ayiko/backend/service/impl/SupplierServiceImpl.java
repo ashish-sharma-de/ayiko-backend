@@ -1,6 +1,7 @@
 package com.ayiko.backend.service.impl;
 
 import com.ayiko.backend.config.JWTTokenProvider;
+import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.repository.entity.SupplierEntity;
@@ -12,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -115,4 +113,32 @@ public class SupplierServiceImpl implements SupplierService {
         return null;
     }
 
+    @Override
+    public void addBusinessImage(UUID supplierId, ImageDTO imageDTO) {
+        repository.findById(supplierId).ifPresent(supplierEntity -> {
+            SupplierImageEntity businessImage = SupplierImageEntity.builder()
+                    .isProfilePicture(imageDTO.isProfilePicture())
+                    .imageUrl(imageDTO.getImageUrl())
+                    .imageDescription(imageDTO.getImageDescription())
+                    .imageTitle(imageDTO.getImageTitle())
+                    .supplier(supplierEntity).build();
+            supplierEntity.getBusinessImages().add(businessImage);
+            repository.save(supplierEntity);
+        });
+    }
+
+    @Override
+    public void deleteBusinessImage(UUID id, ImageDTO imageDTO) {
+        Optional<SupplierEntity> byId = repository.findById(id);
+        if (byId.isPresent()) {
+            SupplierEntity supplierEntity = byId.get();
+            Set<SupplierImageEntity> images = supplierEntity.getBusinessImages();
+            Optional<SupplierImageEntity> imageEntity = images.stream().filter(supplierImageEntity -> supplierImageEntity.getId().equals(imageDTO.getId())).findFirst();
+            if(imageEntity.isPresent()){
+                images.remove(imageEntity.get());
+                supplierEntity.setBusinessImages(images);
+                repository.save(supplierEntity);
+            }
+        }
+    }
 }
