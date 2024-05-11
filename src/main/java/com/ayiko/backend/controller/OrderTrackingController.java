@@ -27,7 +27,7 @@ public class OrderTrackingController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/trackOrder/{id}")
+    @PostMapping("/trackOrder/{orderId}")
     public ResponseEntity trackOrder(@PathVariable UUID orderId, @RequestBody LocationDTO orderLocation) {
         try {
             OrderDTO orderById = orderService.getOrderById(orderId);
@@ -42,7 +42,7 @@ public class OrderTrackingController {
         }
     }
 
-    @GetMapping("/trackOrder/{id}")
+    @GetMapping("/trackOrder/{orderId}")
     public ResponseEntity<OrderTrackingDTO> getOrderTracking(@PathVariable UUID orderId) {
         try {
             OrderDTO orderById = orderService.getOrderById(orderId);
