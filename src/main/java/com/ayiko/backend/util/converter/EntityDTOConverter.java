@@ -329,6 +329,7 @@ public class EntityDTOConverter {
                 .isDefault(addressDTO.isDefault())
                 .ownerId(addressDTO.getOwnerId())
                 .ownerType(addressDTO.getOwnerType())
+                .name(addressDTO.getName())
                 .build();
     }
 
@@ -344,6 +345,7 @@ public class EntityDTOConverter {
                 .isDefault(entity.isDefault())
                 .ownerId(entity.getOwnerId())
                 .ownerType(entity.getOwnerType())
+                .name(entity.getName())
                 .build();
     }
 }

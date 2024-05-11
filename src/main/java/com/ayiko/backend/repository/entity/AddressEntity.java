@@ -27,6 +27,7 @@ public class AddressEntity {
     private String country;
     private String postalCode;
     private boolean isDefault;
+    private String name;
 
     private UUID ownerId;
     private String ownerType;
