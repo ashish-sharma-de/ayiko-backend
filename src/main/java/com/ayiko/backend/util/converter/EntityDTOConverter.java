@@ -54,7 +54,7 @@ public class EntityDTOConverter {
         if(entity == null) {
             return null;
         }
-        return CustomerDTO.builder()
+        CustomerDTO dto = CustomerDTO.builder()
                 .id(entity.getId())
                 .emailAddress(entity.getEmailAddress())
                 .phoneNumber(entity.getPhoneNumber())
@@ -67,6 +67,12 @@ public class EntityDTOConverter {
                                 .build()
                         : null)
                 .build();
+        if(entity.getDeliveryAddresses() != null && entity.getDeliveryAddresses().size() > 0){
+            for (AddressEntity addressEntity : entity.getDeliveryAddresses()) {
+                dto.getDeliveryAddresses().add(EntityDTOConverter.convertAddressEntityToDTO(addressEntity));
+            }
+        }
+        return dto;
     }
 
     public static SupplierEntity convertSupplierDTOToSupplierEntity(SupplierDTO supplierDTO) {
