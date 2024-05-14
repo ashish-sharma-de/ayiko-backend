@@ -69,6 +69,9 @@ public class EntityDTOConverter {
                 .build();
         if(entity.getDeliveryAddresses() != null && entity.getDeliveryAddresses().size() > 0){
             for (AddressEntity addressEntity : entity.getDeliveryAddresses()) {
+                if(dto.getDeliveryAddresses() == null){
+                    dto.setDeliveryAddresses(new ArrayList<>());
+                }
                 dto.getDeliveryAddresses().add(EntityDTOConverter.convertAddressEntityToDTO(addressEntity));
             }
         }
