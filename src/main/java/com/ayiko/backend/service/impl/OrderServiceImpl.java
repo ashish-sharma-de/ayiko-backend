@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -98,12 +99,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDTO> getOrdersForSupplier(UUID supplierId) {
-        return orderRepository.findAllBySupplierIdOrderByCreatedAtDesc(supplierId).stream().map(this::getOrderDTO).collect(Collectors.toList());
+        return orderRepository.findAllBySupplierIdOrderByCreatedAtDesc(supplierId).stream().map(this::getOrderDTO).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Override
     public List<OrderDTO> getOrdersForCustomer(UUID customerId) {
-        return orderRepository.findAllByCustomerIdOrderByCreatedAtDesc(customerId).stream().map(this::getOrderDTO).collect(Collectors.toList());
+        return orderRepository.findAllByCustomerIdOrderByCreatedAtDesc(customerId).stream().map(this::getOrderDTO).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     //TODO How to identify the driver if the driver is suppiler or driver
@@ -117,7 +118,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDTO> getOrdersForDriver(UUID driverId) {
-        return orderRepository.findAllByDriverIdOrderByCreatedAtDesc(driverId).stream().map(this::getOrderDTO).collect(Collectors.toList());
+        return orderRepository.findAllByDriverIdOrderByCreatedAtDesc(driverId).stream().map(this::getOrderDTO).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Override
