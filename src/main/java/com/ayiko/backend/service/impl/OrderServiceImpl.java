@@ -72,6 +72,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderDTO getOrderDTO(OrderEntity orderEntity) {
+        if(orderEntity == null){
+            return null;
+        }
         CartEntity cart = cartRepository.findByOrder(orderEntity);
         CartDTO cartDTO = EntityDTOConverter.convertCartEntityToCartDTO(cart);
         cartDTO.setSupplier(EntityDTOConverter.convertSupplierEntityToSupplierDTO(supplierRepository.findById(cartDTO.getSupplierId()).orElse(null)));
