@@ -184,14 +184,18 @@ public class CartController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<String> deleteCart(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
         try {
             getCustomerIdFromToken(authorizationHeader);
-            boolean deleted = cartService.deleteCart(id);
-            if (deleted) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.notFound().build();
+            if(cartService.canDelete(id)){
+                boolean deleted = cartService.deleteCart(id);
+                if (deleted) {
+                    return ResponseEntity.ok().build();
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
+            }else{
+                return ResponseEntity.unprocessableEntity().body("Cannot delete cart as order is already present for cart.");
             }
         } catch (Exception e) {
             return ExceptionHandler.handleException(e);

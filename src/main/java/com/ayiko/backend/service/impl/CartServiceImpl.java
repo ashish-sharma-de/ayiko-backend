@@ -93,12 +93,26 @@ public class CartServiceImpl implements CartService {
         }
         return null;
     }
-
+    @Override
+    public boolean canDelete(UUID cartId) {
+        Optional<CartEntity> cartEntityOptional = cartRepository.findById(cartId);
+        if(cartEntityOptional.isPresent()){
+            CartEntity entity = cartEntityOptional.get();
+            if(entity.getOrder() != null){
+                return false;
+            }
+        }
+        return true;
+    }
     @Override
     public boolean deleteCart(UUID cartId) {
-        boolean exists = cartRepository.existsById(cartId);
-        if (exists) {
-            cartRepository.deleteById(cartId);
+        Optional<CartEntity> cartEntityOptional = cartRepository.findById(cartId);
+        if(cartEntityOptional.isPresent()){
+            CartEntity entity = cartEntityOptional.get();
+            if(entity.getOrder() != null){
+                return false;
+            }
+            cartRepository.delete(entity);
             return true;
         }
         return false;

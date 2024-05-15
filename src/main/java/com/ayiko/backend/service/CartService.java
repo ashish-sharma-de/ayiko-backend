@@ -16,6 +16,8 @@ public interface CartService {
 
     CartDTO updateCart(CartDTO cartDTO);
 
+    boolean canDelete(UUID cartId);
+
     boolean deleteCart(UUID cartId);
 
     List<CartDTO> getCartsByCustomerId(UUID customerId, CartStatus status);
