@@ -1,5 +1,6 @@
 package com.ayiko.backend.dto.cart;
 
+import com.ayiko.backend.dto.LocationDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,4 +25,5 @@ public class AddressDTO {
 
     private UUID ownerId;
     private String ownerType;
+    private LocationDTO location;
 }

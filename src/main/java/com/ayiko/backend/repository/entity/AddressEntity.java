@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Point;
 
 import java.util.UUID;
 
@@ -31,4 +32,5 @@ public class AddressEntity {
 
     private UUID ownerId;
     private String ownerType;
+    private Point location;
 }

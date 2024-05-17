@@ -339,6 +339,11 @@ public class EntityDTOConverter {
                 .ownerId(addressDTO.getOwnerId())
                 .ownerType(addressDTO.getOwnerType())
                 .name(addressDTO.getName())
+                .location(addressDTO.getLocation() != null ?
+                    geometryFactory.createPoint(
+                            new Coordinate(addressDTO.getLocation().getLongitude(),
+                                    addressDTO.getLocation().getLatitude()))
+                    : null)
                 .build();
     }
 
@@ -355,6 +360,12 @@ public class EntityDTOConverter {
                 .ownerId(entity.getOwnerId())
                 .ownerType(entity.getOwnerType())
                 .name(entity.getName())
+                .location(entity.getLocation() != null ?
+                        LocationDTO.builder()
+                                .latitude(entity.getLocation().getY())
+                                .longitude(entity.getLocation().getX())
+                                .build()
+                        : null)
                 .build();
     }
 }
