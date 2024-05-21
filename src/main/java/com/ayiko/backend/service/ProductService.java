@@ -18,4 +18,10 @@ public interface ProductService {
     boolean deleteProductImage(UUID id, UUID imageId);
 
     public boolean addProductImage(UUID id, ImageDTO imageDTO);
+
+    List<ProductDTO> getBestSellingProductsByCategory(String category);
+
+    boolean checkCategory(String category);
+
+    List<String> getAllCategoriesForSupplier(UUID id);
 }

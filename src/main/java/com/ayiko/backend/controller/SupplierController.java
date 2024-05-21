@@ -160,12 +160,17 @@ public class SupplierController {
 
     @GetMapping("{id}/products")
     public ResponseEntity<List<ProductDTO>> getAllProductsForSupplier(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
+        return getListResponseEntity(id, authorizationHeader);
+    }
+
+    @GetMapping("{id}/categories")
+    public ResponseEntity<List<String>> getCategoriesForSupplier(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
         try {
             String token = validateToken(authorizationHeader);
             if (token == null) {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ERROR_INVALID_TOKEN)).build();
             }
-            return ResponseEntity.ok(productService.getAllProductsForSupplier(id));
+            return ResponseEntity.ok(productService.getAllCategoriesForSupplier(id));
         } catch (Exception e) {
             return ExceptionHandler.handleException(e);
         }
@@ -173,6 +178,10 @@ public class SupplierController {
 
     @GetMapping("{id}/bestsellers")
     public ResponseEntity<List<ProductDTO>> getBestsellersForSupplier(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
+        return getListResponseEntity(id, authorizationHeader);
+    }
+
+    private ResponseEntity<List<ProductDTO>> getListResponseEntity(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
         try {
             String token = validateToken(authorizationHeader);
             if (token == null) {

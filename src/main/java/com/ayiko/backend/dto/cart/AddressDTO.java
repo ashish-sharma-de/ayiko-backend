@@ -22,6 +22,7 @@ public class AddressDTO {
     private String postalCode;
     private boolean isDefault;
     private String name;
+    private String phoneNumber;
 
     private UUID ownerId;
     private String ownerType;

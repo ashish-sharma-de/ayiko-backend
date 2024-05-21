@@ -124,4 +124,19 @@ public class ProductServiceImpl implements ProductService {
         }
         return false;
     }
+
+    @Override
+    public List<ProductDTO> getBestSellingProductsByCategory(String category) {
+        return productRepository.findByCategory(category).stream().map(EntityDTOConverter::convertProductEntityToDTO).toList();
+    }
+
+    @Override
+    public boolean checkCategory(String category) {
+        return productRepository.existsByCategory(category);
+    }
+
+    @Override
+    public List<String> getAllCategoriesForSupplier(UUID id) {
+        return productRepository.findBySupplierId(id).stream().map(ProductEntity::getCategory).collect(Collectors.toList());
+    }
 }

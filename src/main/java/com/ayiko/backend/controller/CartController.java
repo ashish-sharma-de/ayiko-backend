@@ -9,10 +9,7 @@ import com.ayiko.backend.dto.cart.CartStatus;
 import com.ayiko.backend.dto.order.OrderDTO;
 import com.ayiko.backend.exception.ExceptionHandler;
 import com.ayiko.backend.repository.entity.CartEntity;
-import com.ayiko.backend.service.CartService;
-import com.ayiko.backend.service.CustomerService;
-import com.ayiko.backend.service.OrderService;
-import com.ayiko.backend.service.SupplierService;
+import com.ayiko.backend.service.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +31,10 @@ public class CartController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private OrderOTPService orderOTPService;
+
     @Autowired
     private CustomerService customerService;
 
@@ -159,6 +160,7 @@ public class CartController {
             }
             CartEntity cartEntity = cartService.updateCartPaymentReceiptStatus(id, status);
             CartDTO cartDTO = orderService.createOrderForCart(cartEntity);
+            orderOTPService.generateOTPForOrder(cartDTO.getOrderId());
             return ResponseEntity.ok(cartDTO);
         } catch (Exception e) {
             return ExceptionHandler.handleException(e);

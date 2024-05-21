@@ -157,5 +157,20 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/{category}/bestSelling")
+    public ResponseEntity<List<ProductDTO>> getBestSellingProducts(@PathVariable String category, @RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            validateToken(authorizationHeader);
+            boolean validCategory = productService.checkCategory(category);
+            if (!validCategory) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, "Invalid category")).build();
+            }
+            List<ProductDTO> bestSellingProducts = productService.getBestSellingProductsByCategory(category);
+            return ResponseEntity.ok(bestSellingProducts);
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
+        }
+    }
+
 }
 

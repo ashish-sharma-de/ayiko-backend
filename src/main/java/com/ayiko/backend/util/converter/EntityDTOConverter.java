@@ -339,6 +339,7 @@ public class EntityDTOConverter {
                 .ownerId(addressDTO.getOwnerId())
                 .ownerType(addressDTO.getOwnerType())
                 .name(addressDTO.getName())
+                .phoneNumber(addressDTO.getPhoneNumber())
                 .location(addressDTO.getLocation() != null ?
                     geometryFactory.createPoint(
                             new Coordinate(addressDTO.getLocation().getLongitude(),
@@ -360,12 +361,31 @@ public class EntityDTOConverter {
                 .ownerId(entity.getOwnerId())
                 .ownerType(entity.getOwnerType())
                 .name(entity.getName())
+                .phoneNumber(entity.getPhoneNumber())
                 .location(entity.getLocation() != null ?
                         LocationDTO.builder()
                                 .latitude(entity.getLocation().getY())
                                 .longitude(entity.getLocation().getX())
                                 .build()
                         : null)
+                .build();
+    }
+
+    public static SupplierRatingEntity convertSupplierRatingDTOtoEntity(SupplierRatingDTO supplierRatingDTO) {
+        return SupplierRatingEntity.builder()
+                .message(supplierRatingDTO.getMessage())
+                .customerId(supplierRatingDTO.getCustomerId())
+                .supplierId(supplierRatingDTO.getSupplierId())
+                .rating(supplierRatingDTO.getRating())
+                .build();
+    }
+
+    public static SupplierRatingDTO convertSupplierRatingEntityToDTO(SupplierRatingEntity entity) {
+        return SupplierRatingDTO.builder()
+                .message(entity.getMessage())
+                .customerId(entity.getCustomerId())
+                .supplierId(entity.getSupplierId())
+                .rating(entity.getRating())
                 .build();
     }
 }

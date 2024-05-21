@@ -8,10 +8,7 @@ import com.ayiko.backend.dto.order.OrderDTO;
 import com.ayiko.backend.dto.order.OrderDriverStatus;
 import com.ayiko.backend.dto.order.OrderPaymentDTO;
 import com.ayiko.backend.exception.ExceptionHandler;
-import com.ayiko.backend.service.CustomerService;
-import com.ayiko.backend.service.DriverService;
-import com.ayiko.backend.service.OrderService;
-import com.ayiko.backend.service.SupplierService;
+import com.ayiko.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -38,6 +35,9 @@ public class OrderController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private OrderOTPService orderOTPService;
+
     @GetMapping("/{id}")
     public ResponseEntity<OrderDTO> getOrder(@PathVariable UUID id) {
         try {
@@ -46,6 +46,19 @@ public class OrderController {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ExceptionHandler.ERROR_INVALID_ID)).build();
             }
             return ResponseEntity.ok(order);
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
+        }
+    }
+
+    @GetMapping("/{id}/otp")
+    public ResponseEntity<String> getOrderOTP(@PathVariable UUID id) {
+        try {
+            String otp = orderOTPService.getOTPForOrder(id);
+            if (otp == null) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ExceptionHandler.ERROR_INVALID_ID)).build();
+            }
+            return ResponseEntity.ok(otp);
         } catch (Exception e) {
             return ExceptionHandler.handleException(e);
         }
@@ -126,6 +139,17 @@ public class OrderController {
     public ResponseEntity startDelivery(@RequestHeader("Authorization") String authorizationHeader,
                                         @PathVariable UUID orderId) {
         return updateDriverStatusForOrder(authorizationHeader, orderId, OrderDriverStatus.DRIVER_DISPATCHED);
+    }
+
+    @PostMapping("/{orderId}/validateOrderOTP/{otp}")
+    public ResponseEntity validateDeliveryOTP(@RequestHeader("Authorization") String authorizationHeader,
+                                           @PathVariable UUID orderId, @PathVariable String otp) {
+        boolean isValidOTP = orderOTPService.validateOTPForOrder(orderId, otp);
+        if (isValidOTP) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Invalid OTP")).build();
+        }
     }
 
     @PostMapping("/{orderId}/completeDelivery")

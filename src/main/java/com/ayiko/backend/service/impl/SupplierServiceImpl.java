@@ -7,6 +7,7 @@ import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.repository.entity.SupplierEntity;
 import com.ayiko.backend.repository.SupplierRepository;
 import com.ayiko.backend.repository.entity.SupplierImageEntity;
+import com.ayiko.backend.service.SupplierRatingService;
 import com.ayiko.backend.service.SupplierService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private SupplierRatingService supplierRatingService;
 
     @Autowired
     private JWTTokenProvider tokenProvider;
@@ -90,7 +94,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public List<SupplierDTO> getAllSuppliers() {
-        return repository.findAll().stream().map(EntityDTOConverter::convertSupplierEntityToSupplierDTO).toList();
+        return repository.findAll().stream().map(this::getSupplier).toList();
     }
 
     @Override
@@ -140,5 +144,11 @@ public class SupplierServiceImpl implements SupplierService {
                 repository.save(supplierEntity);
             }
         }
+    }
+
+    private SupplierDTO getSupplier(SupplierEntity entity){
+        SupplierDTO supplierDTO = EntityDTOConverter.convertSupplierEntityToSupplierDTO(entity);
+        supplierDTO.setRating(supplierRatingService.getAverageRatingForSupplier(entity.getId()));
+        return supplierDTO;
     }
 }
