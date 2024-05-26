@@ -2,6 +2,7 @@ package com.ayiko.backend.service.impl;
 
 import com.ayiko.backend.config.JWTTokenProvider;
 import com.ayiko.backend.dto.DriverDTO;
+import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.repository.DriverEntityRepository;
 import com.ayiko.backend.repository.entity.DriverEntity;
@@ -116,5 +117,13 @@ public class DriverServiceImpl implements DriverService {
             return tokenProvider.generateToken(driverEntity.getEmail());
         }
         return null;
+    }
+
+    @Override
+    public void uploadProfilePicture(UUID id, ImageDTO profilePictureDTO) {
+        repository.findById(id).ifPresent(driverEntity -> {
+            driverEntity.setProfileImage(EntityDTOConverter.convertImageDTOToDriverImageEntity(profilePictureDTO));
+            repository.save(driverEntity);
+        });
     }
 }

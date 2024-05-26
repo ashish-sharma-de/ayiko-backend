@@ -2,6 +2,7 @@ package com.ayiko.backend.controller;
 
 import com.ayiko.backend.config.JWTTokenProvider;
 import com.ayiko.backend.dto.DriverDTO;
+import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.exception.ExceptionHandler;
@@ -88,6 +89,20 @@ public class DriverController {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ERROR_INVALID_ID)).build();
             }
             return ResponseEntity.ok(driverService.resetPassword(id, currentPassword, newPassword));
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
+        }
+    }
+
+    @PutMapping("/{id}/uploadProfilePicture")
+    public ResponseEntity uploadProfilePicture(@PathVariable UUID id, @RequestBody ImageDTO profilePictureDTO) {
+        try {
+            DriverDTO driverById = driverService.getDriverById(id);
+            if (driverById == null) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ERROR_INVALID_ID)).build();
+            }
+            driverService.uploadProfilePicture(id, profilePictureDTO);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ExceptionHandler.handleException(e);
         }

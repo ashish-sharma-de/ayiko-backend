@@ -8,9 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Data
@@ -38,6 +36,11 @@ public class CustomerEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<AddressEntity> deliveryAddresses = new ArrayList();
+
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private CustomerImageEntity profileImage;
 
     @PrePersist
     protected void onCreate() {

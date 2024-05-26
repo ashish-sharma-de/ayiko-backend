@@ -2,6 +2,7 @@ package com.ayiko.backend.service.impl;
 
 import com.ayiko.backend.config.JWTTokenProvider;
 import com.ayiko.backend.dto.CustomerDTO;
+import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.dto.cart.AddressDTO;
 import com.ayiko.backend.repository.CustomerRepository;
@@ -107,6 +108,15 @@ public class CustomerServiceImpl implements CustomerService {
         CustomerEntity customer = repository.findById(customerId).orElse(null);
         if (customer != null) {
             customer.getDeliveryAddresses().removeIf(addressEntity -> addressEntity.getId().equals(addressId));
+            repository.save(customer);
+        }
+    }
+
+    @Override
+    public void uploadProfilePicture(UUID customerId, ImageDTO profilePictureDTO) {
+        CustomerEntity customer = repository.findById(customerId).orElse(null);
+        if (customer != null) {
+            customer.setProfileImage(EntityDTOConverter.convertImageDTOToCustomerImageEntity(profilePictureDTO));
             repository.save(customer);
         }
     }

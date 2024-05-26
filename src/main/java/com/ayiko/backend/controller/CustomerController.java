@@ -1,6 +1,7 @@
 package com.ayiko.backend.controller;
 
 import com.ayiko.backend.config.JWTTokenProvider;
+import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.cart.AddressDTO;
 import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartStatus;
@@ -131,6 +132,20 @@ public class CustomerController {
             addressDTO.setOwnerId(customerId);
             addressDTO.setOwnerType("CUSTOMER");
             customerService.addAddress(customerId, addressDTO);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
+        }
+    }
+
+    @PostMapping("/{customerId}/uploadProfilePicture")
+    public ResponseEntity<String> uploadProfilePicture(@PathVariable UUID customerId, @RequestHeader("Authorization") String authorizationHeader, @RequestBody ImageDTO profilePictureDTO) {
+        try {
+            UUID customerById = getCustomerIdFromToken(authorizationHeader);
+            if (!customerById.equals(customerId)) {
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not authorized to access this resource")).build();
+            }
+            customerService.uploadProfilePicture(customerId, profilePictureDTO);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ExceptionHandler.handleException(e);

@@ -1,6 +1,7 @@
 package com.ayiko.backend.service;
 
 import com.ayiko.backend.dto.CustomerDTO;
+import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.dto.cart.AddressDTO;
 
@@ -18,4 +19,6 @@ public interface CustomerService {
     CustomerDTO getCustomerByEmail(String email);
     void addAddress(UUID customerId, AddressDTO addressDTO);
     void deleteAddress(UUID customerId, UUID addressId);
+
+    void uploadProfilePicture(UUID customerId, ImageDTO profilePictureDTO);
 }

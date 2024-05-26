@@ -26,4 +26,6 @@ public class DriverDTO {
     @LastModifiedDate
     private LocalDate updatedAt;
     private LocalDate lastLoginAt;
+
+    private ImageDTO profileImage;
 }

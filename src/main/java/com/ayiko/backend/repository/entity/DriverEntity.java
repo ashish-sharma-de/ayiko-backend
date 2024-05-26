@@ -1,12 +1,7 @@
 package com.ayiko.backend.repository.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -36,6 +31,11 @@ public class DriverEntity {
     @LastModifiedDate
     private LocalDate updatedAt;
     private LocalDate lastLoginAt;
+
+    @OneToOne(mappedBy = "driver", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private DriverImageEntity profileImage;
 
     private Point location;
 

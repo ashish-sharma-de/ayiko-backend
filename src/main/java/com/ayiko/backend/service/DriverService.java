@@ -1,6 +1,7 @@
 package com.ayiko.backend.service;
 
 import com.ayiko.backend.dto.DriverDTO;
+import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.LoginDTO;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface DriverService {
     boolean resetPassword(UUID id, String currentPassword, String newPassword);
 
     String authenticateDriver(LoginDTO loginDTO);
+
+    void uploadProfilePicture(UUID id, ImageDTO profilePictureDTO);
 }

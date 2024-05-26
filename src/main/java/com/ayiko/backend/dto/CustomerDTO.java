@@ -17,5 +17,6 @@ public class CustomerDTO {
     private String emailAddress;
     private String password; // Note: handle the password securely, consider not exposing in DTO
     private LocationDTO location;
+    private ImageDTO profileImage;
     private List<AddressDTO> deliveryAddresses = new ArrayList<>();
 }

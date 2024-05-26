@@ -12,6 +12,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class EntityDTOConverter {
@@ -47,6 +48,7 @@ public class EntityDTOConverter {
                                 new Coordinate(dto.getLocation().getLongitude(),
                                         dto.getLocation().getLatitude()))
                         : null)
+                .profileImage(dto.getProfileImage() != null ? convertImageDTOToCustomerImageEntity(dto.getProfileImage()) : null)
                 .build();
     }
 
@@ -75,7 +77,18 @@ public class EntityDTOConverter {
                 dto.getDeliveryAddresses().add(EntityDTOConverter.convertAddressEntityToDTO(addressEntity));
             }
         }
+        if(entity.getProfileImage() != null){
+            dto.setProfileImage(EntityDTOConverter.convertCustomerImageEntityToDTO(entity.getProfileImage()));
+        }
         return dto;
+    }
+
+    private static ImageDTO convertCustomerImageEntityToDTO(CustomerImageEntity customerImageEntity) {
+        return ImageDTO.builder()
+                .imageUrl(customerImageEntity.getImageUrl())
+                .imageDescription(customerImageEntity.getImageDescription())
+                .imageTitle(customerImageEntity.getImageTitle())
+                .build();
     }
 
     public static SupplierEntity convertSupplierDTOToSupplierEntity(SupplierDTO supplierDTO) {
@@ -237,7 +250,7 @@ public class EntityDTOConverter {
     }
 
     public static DriverEntity convertDriverDTOToEntity(DriverDTO driverDTO) {
-        return DriverEntity.builder()
+        DriverEntity entity = DriverEntity.builder()
                 .id(driverDTO.getId())
                 .email(driverDTO.getEmail())
                 .password(driverDTO.getPassword())
@@ -253,6 +266,10 @@ public class EntityDTOConverter {
                                         driverDTO.getLocation().getLatitude()))
                         : null)
                 .build();
+        if(driverDTO.getProfileImage() != null){
+            entity.setProfileImage(convertImageDTOToDriverImageEntity(driverDTO.getProfileImage()));
+        }
+        return entity;
     }
 
     public static DriverDTO convertDriverEntityToDTO(DriverEntity entity) {
@@ -275,6 +292,7 @@ public class EntityDTOConverter {
                                 .longitude(entity.getLocation().getX())
                                 .build()
                         : null)
+                .profileImage(entity.getProfileImage() != null ? convertDriverImageEntityToDTO(entity.getProfileImage()) : null)
                 .build();
     }
 
@@ -386,6 +404,30 @@ public class EntityDTOConverter {
                 .customerId(entity.getCustomerId())
                 .supplierId(entity.getSupplierId())
                 .rating(entity.getRating())
+                .build();
+    }
+
+    public static CustomerImageEntity convertImageDTOToCustomerImageEntity(ImageDTO imageDTO) {
+        return CustomerImageEntity.builder()
+                .imageUrl(imageDTO.getImageUrl())
+                .imageDescription(imageDTO.getImageDescription())
+                .imageTitle(imageDTO.getImageTitle())
+                .build();
+    }
+
+    public static DriverImageEntity convertImageDTOToDriverImageEntity(ImageDTO imageDTO) {
+        return DriverImageEntity.builder()
+                .imageUrl(imageDTO.getImageUrl())
+                .imageDescription(imageDTO.getImageDescription())
+                .imageTitle(imageDTO.getImageTitle())
+                .build();
+    }
+
+    private static ImageDTO convertDriverImageEntityToDTO(DriverImageEntity driverImageEntity) {
+        return ImageDTO.builder()
+                .imageUrl(driverImageEntity.getImageUrl())
+                .imageDescription(driverImageEntity.getImageDescription())
+                .imageTitle(driverImageEntity.getImageTitle())
                 .build();
     }
 }
