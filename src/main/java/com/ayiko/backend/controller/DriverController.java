@@ -94,7 +94,7 @@ public class DriverController {
         }
     }
 
-    @PutMapping("/{id}/uploadProfilePicture")
+    @PostMapping("/{id}/uploadProfilePicture")
     public ResponseEntity uploadProfilePicture(@PathVariable UUID id, @RequestBody ImageDTO profilePictureDTO) {
         try {
             DriverDTO driverById = driverService.getDriverById(id);
