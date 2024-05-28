@@ -7,6 +7,7 @@ import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.dto.cart.AddressDTO;
 import com.ayiko.backend.repository.CustomerRepository;
 import com.ayiko.backend.repository.entity.CustomerEntity;
+import com.ayiko.backend.repository.entity.CustomerImageEntity;
 import com.ayiko.backend.repository.entity.SupplierEntity;
 import com.ayiko.backend.service.CustomerService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
@@ -116,7 +117,9 @@ public class CustomerServiceImpl implements CustomerService {
     public void uploadProfilePicture(UUID customerId, ImageDTO profilePictureDTO) {
         CustomerEntity customer = repository.findById(customerId).orElse(null);
         if (customer != null) {
-            customer.setProfileImage(EntityDTOConverter.convertImageDTOToCustomerImageEntity(profilePictureDTO));
+            CustomerImageEntity customerImageEntity = EntityDTOConverter.convertImageDTOToCustomerImageEntity(profilePictureDTO);
+            customerImageEntity.setCustomer(customer);
+            customer.setProfileImage(customerImageEntity);
             repository.save(customer);
         }
     }

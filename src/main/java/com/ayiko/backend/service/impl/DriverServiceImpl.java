@@ -6,6 +6,7 @@ import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.repository.DriverEntityRepository;
 import com.ayiko.backend.repository.entity.DriverEntity;
+import com.ayiko.backend.repository.entity.DriverImageEntity;
 import com.ayiko.backend.service.DriverService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,7 +123,9 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public void uploadProfilePicture(UUID id, ImageDTO profilePictureDTO) {
         repository.findById(id).ifPresent(driverEntity -> {
-            driverEntity.setProfileImage(EntityDTOConverter.convertImageDTOToDriverImageEntity(profilePictureDTO));
+            DriverImageEntity driverImageEntity = EntityDTOConverter.convertImageDTOToDriverImageEntity(profilePictureDTO);
+            driverImageEntity.setDriver(driverEntity);
+            driverEntity.setProfileImage(driverImageEntity);
             repository.save(driverEntity);
         });
     }
