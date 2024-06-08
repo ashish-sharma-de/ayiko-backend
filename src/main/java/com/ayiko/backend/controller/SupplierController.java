@@ -46,9 +46,9 @@ public class SupplierController {
     @GetMapping
     public ResponseEntity<List<SupplierDTO>> getAllSuppliers(@RequestHeader("Authorization") String authorizationHeader) {
         //TODO: Sort the suppliers by location
-        if (validateToken(authorizationHeader) == null) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ERROR_INVALID_TOKEN)).build();
-        }
+//        if (validateToken(authorizationHeader) == null) {
+//            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ERROR_INVALID_TOKEN)).build();
+//        }
         return ResponseEntity.ok(supplierService.getAllSuppliers());
     }
 
