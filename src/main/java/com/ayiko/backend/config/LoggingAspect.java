@@ -1,6 +1,5 @@
 package com.ayiko.backend.config;
 
-import com.ayiko.backend.controller.ProductController;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
