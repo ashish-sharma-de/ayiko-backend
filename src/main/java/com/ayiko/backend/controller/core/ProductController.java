@@ -73,12 +73,12 @@ public class ProductController {
     @GetMapping("/popular")
     public ResponseEntity<List<ProductDTO>> getPopularProducts(@RequestHeader("Authorization") String authorizationHeader) {
 
-        try {
-            validateToken(authorizationHeader);
+//       try {
+//            validateToken(authorizationHeader);
             return ResponseEntity.ok(productService.getPopularProducts());
-        } catch (Exception e) {
-            return ExceptionHandler.handleException(e);
-        }
+//        } catch (Exception e) {
+//            return ExceptionHandler.handleException(e);
+//        }
     }
 
     @GetMapping("/{id}")
