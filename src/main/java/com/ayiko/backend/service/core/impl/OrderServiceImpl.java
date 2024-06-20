@@ -5,10 +5,10 @@ import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.order.OrderDTO;
 import com.ayiko.backend.dto.order.OrderDriverStatus;
 import com.ayiko.backend.dto.order.OrderStatus;
-import com.ayiko.backend.repository.*;
-import com.ayiko.backend.repository.entity.CartEntity;
-import com.ayiko.backend.repository.entity.CustomerEntity;
-import com.ayiko.backend.repository.entity.OrderEntity;
+import com.ayiko.backend.repository.core.*;
+import com.ayiko.backend.repository.core.entity.CartEntity;
+import com.ayiko.backend.repository.core.entity.CustomerEntity;
+import com.ayiko.backend.repository.core.entity.OrderEntity;
 import com.ayiko.backend.service.core.OrderService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,19 +76,20 @@ public class OrderServiceImpl implements OrderService {
         if(orderEntity == null){
             return null;
         }
-        CartEntity cart = cartRepository.findByOrder(orderEntity);
-        CartDTO cartDTO = EntityDTOConverter.convertCartEntityToCartDTO(cart);
-        cartDTO.setSupplier(EntityDTOConverter.convertSupplierEntityToSupplierDTO(supplierRepository.findById(cartDTO.getSupplierId()).orElse(null)));
-        cartDTO.setCustomer(EntityDTOConverter.convertCustomerEntityToCustomerDTO(customerRepository.findById(cartDTO.getCustomerId()).orElse(null)));
-        if(cart.getDeliveryAddressId() != null){
-            addressRepository.findById(cart.getDeliveryAddressId()).ifPresent(addressEntity -> cartDTO.setDeliveryAddress(EntityDTOConverter.convertAddressEntityToDTO(addressEntity)));
-        }
-        cartDTO.getItems().forEach(cartItemDTO -> {
-            ProductDTO productDTO = EntityDTOConverter.convertProductEntityToDTO(productRepository.findById(cartItemDTO.getProductId()).orElse(null));
-            cartItemDTO.setProduct(productDTO);
+        OrderDTO orderDTO = EntityDTOConverter.convertOrderEntityToDTO(orderEntity);
+
+        orderDTO.setSupplier(EntityDTOConverter.convertSupplierEntityToSupplierDTO(supplierRepository.findById(orderEntity.getSupplierId()).orElse(null)));
+        orderDTO.setCustomer(EntityDTOConverter.convertCustomerEntityToCustomerDTO(customerRepository.findById(orderEntity.getCustomerId()).orElse(null)));
+
+        orderDTO.getItems().forEach(orderItemDTO -> {
+            ProductDTO productDTO = EntityDTOConverter.convertProductEntityToDTO(productRepository.findById(orderItemDTO.getProductId()).orElse(null));
+            orderItemDTO.setProduct(productDTO);
         });
 
-        OrderDTO orderDTO = EntityDTOConverter.convertOrderEntityToDTO(orderEntity, cartDTO);
+        if(orderEntity.getDeliveryAddressId() != null){
+            addressRepository.findById(orderEntity.getDeliveryAddressId()).ifPresent(addressEntity -> orderDTO.setDeliveryAddress(EntityDTOConverter.convertAddressEntityToDTO(addressEntity)));
+        }
+
         if (orderEntity.getDriverId() != null && !orderEntity.getSupplierId().equals(orderEntity.getDriverId())) {
             orderDTO.setDriver(orderEntity.getDriverId() != null
                     ? EntityDTOConverter.convertDriverEntityToDTO(driverRepository.findById(orderDTO.getDriverId()).orElse(null))

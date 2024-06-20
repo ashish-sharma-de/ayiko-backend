@@ -6,7 +6,7 @@ import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartItemDTO;
 import com.ayiko.backend.dto.cart.PaymentDTO;
 import com.ayiko.backend.dto.order.*;
-import com.ayiko.backend.repository.entity.*;
+import com.ayiko.backend.repository.core.entity.*;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 
@@ -317,7 +317,7 @@ public class EntityDTOConverter {
         return orderEntity;
     }
 
-    public static OrderDTO convertOrderEntityToDTO(OrderEntity orderEntity, CartDTO cart) {
+    public static OrderDTO convertOrderEntityToDTO(OrderEntity orderEntity) {
         OrderDTO orderDTO = OrderDTO.builder()
                 .id(orderEntity.getId())
                 .customerId(orderEntity.getCustomerId())
@@ -335,8 +335,6 @@ public class EntityDTOConverter {
                 .driverId(orderEntity.getDriverId())
                 .driverStatus(orderEntity.getDriverStatus())
                 .isAssignedToSelf(false)
-                .deliveryAddress(cart.getDeliveryAddress())
-                .cart(cart)
                 .build();
         if(orderEntity.getDriverId() != null && orderEntity.getSupplierId().equals(orderEntity.getDriverId())) {
             orderDTO.setAssignedToSelf(true);

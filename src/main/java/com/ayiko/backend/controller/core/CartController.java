@@ -7,7 +7,7 @@ import com.ayiko.backend.dto.cart.CartPaymentConfirmationStatus;
 import com.ayiko.backend.dto.cart.CartPaymentReceiptStatus;
 import com.ayiko.backend.dto.cart.CartStatus;
 import com.ayiko.backend.exception.ExceptionHandler;
-import com.ayiko.backend.repository.entity.CartEntity;
+import com.ayiko.backend.repository.core.entity.CartEntity;
 import com.ayiko.backend.service.core.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

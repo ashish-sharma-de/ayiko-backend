@@ -1,7 +1,7 @@
 package com.ayiko.backend.service.core.impl;
 
-import com.ayiko.backend.repository.OrderOTPRepository;
-import com.ayiko.backend.repository.entity.OrderOTPEntity;
+import com.ayiko.backend.repository.core.OrderOTPRepository;
+import com.ayiko.backend.repository.core.entity.OrderOTPEntity;
 import com.ayiko.backend.service.core.OrderOTPService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.ayiko.backend.dto;
 
-import com.ayiko.backend.repository.entity.DriverStatus;
+import com.ayiko.backend.repository.core.entity.DriverStatus;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.LastModifiedDate;

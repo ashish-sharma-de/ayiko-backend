@@ -2,8 +2,8 @@ package com.ayiko.backend.service.core.impl;
 
 import com.ayiko.backend.dto.LocationDTO;
 import com.ayiko.backend.dto.order.OrderTrackingDTO;
-import com.ayiko.backend.repository.OrderTrackingRepository;
-import com.ayiko.backend.repository.entity.OrderTrackingEntity;
+import com.ayiko.backend.repository.core.OrderTrackingRepository;
+import com.ayiko.backend.repository.core.entity.OrderTrackingEntity;
 import com.ayiko.backend.service.core.OrderTrackingService;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;

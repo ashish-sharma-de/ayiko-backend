@@ -1,8 +1,8 @@
 package com.ayiko.backend.service.core.impl;
 
 import com.ayiko.backend.dto.SupplierRatingDTO;
-import com.ayiko.backend.repository.SupplierRatingRepository;
-import com.ayiko.backend.repository.entity.SupplierRatingEntity;
+import com.ayiko.backend.repository.core.SupplierRatingRepository;
+import com.ayiko.backend.repository.core.entity.SupplierRatingEntity;
 import com.ayiko.backend.service.core.SupplierRatingService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;

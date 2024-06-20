@@ -1,9 +1,7 @@
 package com.ayiko.backend.service.core.impl;
 
-import com.ayiko.backend.repository.CustomerRepository;
-import com.ayiko.backend.repository.SupplierRepository;
-import com.ayiko.backend.repository.entity.CustomerEntity;
-import com.ayiko.backend.repository.entity.SupplierEntity;
+import com.ayiko.backend.repository.core.SupplierRepository;
+import com.ayiko.backend.repository.core.entity.SupplierEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

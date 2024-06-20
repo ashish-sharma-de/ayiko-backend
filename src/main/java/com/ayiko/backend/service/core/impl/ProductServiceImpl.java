@@ -2,11 +2,11 @@ package com.ayiko.backend.service.core.impl;
 
 import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.ProductDTO;
-import com.ayiko.backend.repository.ProductRepository;
-import com.ayiko.backend.repository.SupplierRepository;
-import com.ayiko.backend.repository.entity.ProductEntity;
-import com.ayiko.backend.repository.entity.ProductImageEntity;
-import com.ayiko.backend.repository.entity.SupplierEntity;
+import com.ayiko.backend.repository.core.ProductRepository;
+import com.ayiko.backend.repository.core.SupplierRepository;
+import com.ayiko.backend.repository.core.entity.ProductEntity;
+import com.ayiko.backend.repository.core.entity.ProductImageEntity;
+import com.ayiko.backend.repository.core.entity.SupplierEntity;
 import com.ayiko.backend.service.core.ProductService;
 import com.ayiko.backend.service.core.SupplierService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;

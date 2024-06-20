@@ -4,7 +4,7 @@ import com.ayiko.backend.dto.cart.CartDTO;
 import com.ayiko.backend.dto.cart.CartPaymentConfirmationStatus;
 import com.ayiko.backend.dto.cart.CartPaymentReceiptStatus;
 import com.ayiko.backend.dto.cart.CartStatus;
-import com.ayiko.backend.repository.entity.CartEntity;
+import com.ayiko.backend.repository.core.entity.CartEntity;
 
 import java.util.List;
 import java.util.UUID;
