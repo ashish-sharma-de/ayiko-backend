@@ -107,6 +107,16 @@ public class CustomerController {
         return token != null ? ResponseEntity.ok(token) : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
+    @PostMapping("/delete-account")
+    public ResponseEntity<Boolean> deleteAccount(@RequestBody LoginDTO loginDTO) {
+        CustomerDTO customerById = customerService.getCustomerByEmail(loginDTO.getUsername());
+        if (customerById == null) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ERROR_INVALID_USERNAME)).build();
+        }
+        Boolean deleted = customerService.deleteCustomer(customerById.getId());
+        return ResponseEntity.ok(deleted);
+    }
+
     @GetMapping("/{customerId}/carts")
     public ResponseEntity<List<CartDTO>> getCartsForSupplier(@PathVariable UUID customerId, @RequestHeader("Authorization") String authorizationHeader, @RequestParam(name = "status", required = false) CartStatus status) {
         try {

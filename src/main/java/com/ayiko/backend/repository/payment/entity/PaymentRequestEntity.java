@@ -22,12 +22,15 @@ public class PaymentRequestEntity {
     private UUID id;
 
     private String paymentOrderId;
-    private UUID customerId;
+    private UUID userId;
     private String payToken;
     private String paymentUrl;
     private String notificationToken;
     private String state;
     private String status;
+    private Double amount;
+
+    private String userType;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

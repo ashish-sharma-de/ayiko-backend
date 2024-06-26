@@ -110,6 +110,17 @@ public class SupplierController {
         return token != null ? ResponseEntity.ok(token) : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
+    @PostMapping("/delete-account")
+    public ResponseEntity<Boolean> deleteAccount(@RequestBody LoginDTO loginDTO) {
+        SupplierDTO supplier = supplierService.getSupplierByEmail(loginDTO.getUsername());
+        if (supplier == null) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ERROR_INVALID_EMAIL)).build();
+        }
+        Boolean deleted = supplierService.deleteSupplier(supplier.getId());
+        return ResponseEntity.ok(deleted);
+    }
+
+
     @PostMapping("/{id}/addBusinessImage")
     public ResponseEntity<String> addBusinessImage(@PathVariable UUID id, @RequestBody ImageDTO imageDTO) {
         SupplierDTO supplierById = supplierService.getSupplierById(id);
