@@ -21,11 +21,6 @@ import java.util.Optional;
 @Service
 public class MobileMoneyPaymentService implements PaymentService {
 
-    @Value("${bizao.CLIENT_ID}")
-    private String bizaoClientId;
-    @Value("${bizao.CLIENT_SECRET}")
-    private String bizaoClientSecret;
-
     @Value("${bizao.baseurl}")
     private String bizaoBaseUrl;
 
@@ -60,7 +55,7 @@ public class MobileMoneyPaymentService implements PaymentService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + this.getAccessToken());
-        headers.set("mno-name", "orange");
+        headers.set("mno-name", "MTN");
         headers.set("country-code", "ci");
         headers.set("lang", "en");
         headers.set("channel", "web");

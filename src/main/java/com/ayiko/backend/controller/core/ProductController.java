@@ -82,9 +82,9 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProduct(@PathVariable UUID id, @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable UUID id) {
         try {
-            getSupplierIdFromToken(authorizationHeader);
+//            getSupplierIdFromToken(authorizationHeader);
             ProductDTO productById = productService.getProductById(id);
             if (productById == null) {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ERROR_INVALID_PRODUCT_ID)).build();
