@@ -24,4 +24,8 @@ public interface ProductService {
     boolean checkCategory(String category);
 
     List<String> getAllCategoriesForSupplier(UUID id);
+
+    List<ProductDTO> searchProductsForSupplier(UUID supplierId, String searchQuery);
+
+    List<ProductDTO> filterProducts(UUID supplierId, String category, Boolean isAvailable, String priceMin, String priceMax, String[] sort);
 }

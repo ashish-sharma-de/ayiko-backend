@@ -9,6 +9,7 @@ import com.ayiko.backend.repository.core.*;
 import com.ayiko.backend.repository.core.entity.CartEntity;
 import com.ayiko.backend.repository.core.entity.CartItemEntity;
 import com.ayiko.backend.repository.core.entity.CartPaymentEntity;
+import com.ayiko.backend.repository.core.entity.ProductEntity;
 import com.ayiko.backend.service.core.CartService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,11 @@ public class CartServiceImpl implements CartService {
     private CartDTO convertCartEntityToCartDTO(CartEntity entity){
         CartDTO dto = EntityDTOConverter.convertCartEntityToCartDTO(entity);
         dto.getItems().forEach(cartItemDTO -> {
-            ProductDTO productDTO = EntityDTOConverter.convertProductEntityToDTO(productRepository.findById(cartItemDTO.getProductId()).orElse(null));
+            if(cartItemDTO.getProductId() == null){
+                System.out.println(cartItemDTO);
+            }
+            ProductEntity byId = productRepository.findById(cartItemDTO.getProductId()).orElse(null);
+            ProductDTO productDTO = byId != null ? EntityDTOConverter.convertProductEntityToDTO(byId) : null;
             cartItemDTO.setProduct(productDTO);
         });
         if(entity.getDeliveryAddressId() != null){

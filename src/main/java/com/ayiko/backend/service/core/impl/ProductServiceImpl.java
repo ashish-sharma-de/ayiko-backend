@@ -2,6 +2,7 @@ package com.ayiko.backend.service.core.impl;
 
 import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.ProductDTO;
+import com.ayiko.backend.repository.core.ProductEntitySpecification;
 import com.ayiko.backend.repository.core.ProductRepository;
 import com.ayiko.backend.repository.core.SupplierRepository;
 import com.ayiko.backend.repository.core.entity.ProductEntity;
@@ -11,6 +12,8 @@ import com.ayiko.backend.service.core.ProductService;
 import com.ayiko.backend.service.core.SupplierService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -138,5 +141,45 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<String> getAllCategoriesForSupplier(UUID id) {
         return productRepository.findBySupplierId(id).stream().map(ProductEntity::getCategory).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> searchProductsForSupplier(UUID supplierId, String searchQuery) {
+        List<ProductEntity> productEntityList = productRepository.findBySupplierIdAndNameContainingIgnoreCase(supplierId, searchQuery);
+        List<ProductDTO> collect = productEntityList.stream().map(EntityDTOConverter::convertProductEntityToDTO).collect(Collectors.toList());
+        return collect;
+    }
+
+    @Override
+    public List<ProductDTO> filterProducts(UUID supplierId, String category, Boolean isAvailable, String priceMin, String priceMax, String[] sort) {
+        Specification<ProductEntity> spec = Specification.where(ProductEntitySpecification.hasSupplierId(supplierId));
+
+        if (category != null) {
+            spec = spec.and(ProductEntitySpecification.hasCategory(category));
+        }
+
+        if (isAvailable != null) {
+            spec = spec.and(ProductEntitySpecification.isAvailable(isAvailable));
+        }
+
+        if (priceMin != null) {
+            spec = spec.and(ProductEntitySpecification.hasPriceGreaterThan(priceMin));
+        }
+
+        if (priceMax != null) {
+            spec = spec.and(ProductEntitySpecification.hasPriceLessThan(priceMax));
+        }
+
+        Sort sortOrder = Sort.by(getSortOrders(sort));
+        List<ProductEntity> productEntityList = productRepository.findAll(spec, sortOrder);
+        return productEntityList.stream().map(EntityDTOConverter::convertProductEntityToDTO).collect(Collectors.toList());
+    }
+
+    private List<Sort.Order> getSortOrders(String[] sort) {
+        return List.of(sort).stream()
+                .map(order -> {
+                    String[] _order = order.split(",");
+                    return new Sort.Order(Sort.Direction.fromString(_order[1]), _order[0]);
+                }).toList();
     }
 }

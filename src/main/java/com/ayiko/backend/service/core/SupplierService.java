@@ -21,4 +21,9 @@ public interface SupplierService {
     void addBusinessImage(UUID supplierId, ImageDTO imageDTO);
 
     void deleteBusinessImage(UUID id, ImageDTO imageDTO);
+
+    List<SupplierDTO> searchSupplier(String searchQuery);
+
+    List<SupplierDTO> findNearbySuppliers(double lat, double lon, double distance);
+
 }

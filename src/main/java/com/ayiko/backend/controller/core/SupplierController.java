@@ -66,6 +66,7 @@ public class SupplierController {
         if (supplierById == null) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ERROR_INVALID_ID)).build();
         } else {
+            supplierById.setProductCount((long) productService.getAllCategoriesForSupplier(id).size());
             return ResponseEntity.ok(supplierById);
         }
     }
@@ -209,6 +210,16 @@ public class SupplierController {
         String token = validateToken(authorizationHeader);
         UUID supplierIdFromToken = getSupplierIdFromToken(token);
         return supplierService.getSupplierById(supplierIdFromToken);
+    }
+
+    @GetMapping("/search")
+    public List<SupplierDTO> searchSupplier(@RequestParam String searchQuery) {
+        return supplierService.searchSupplier(searchQuery);
+    }
+
+    @GetMapping("/nearBy")
+    public List<SupplierDTO> getNearBySuppliers(@RequestParam double lat, @RequestParam double lon, @RequestParam double distance) {
+        return supplierService.findNearbySuppliers(lat, lon, distance);
     }
 }
 

@@ -197,6 +197,7 @@ public class EntityDTOConverter {
                 .category(entity.getCategory())
                 .supplierId(entity.getSupplier().getId())
                 .isAvailable(entity.isAvailable())
+                .supplierDTO(EntityDTOConverter.convertSupplierEntityToSupplierDTO(entity.getSupplier()))
                 .productCategory(entity.getProductCategory())
                 .imageUrl(entity.getImages().stream().map(image -> ImageDTO.builder().imageTitle(image.getImageTitle()).id(image.getId())
                         .imageDescription(image.getImageDescription()).imageUrl(image.getImageUrl()).build()).collect(Collectors.toSet()))

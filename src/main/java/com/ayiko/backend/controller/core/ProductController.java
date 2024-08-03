@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 @RestController
 @RequestMapping("api/v1/products")
 public class ProductController {
@@ -30,7 +34,7 @@ public class ProductController {
     @Autowired
     private JWTTokenProvider tokenProvider;
     private final String ERROR_INVALID_TOKEN = "Token invalid, valid token required to access this API";
-    private final String ERROR_INVALID_PRODUCT_ID = "Token invalid, valid token required to access this API";
+    private final String ERROR_INVALID_PRODUCT_ID = "Token ProductId, Product not found with this ID";
 
     private final String ERROR_INVALID_SUPPLIER_ID = "Supplier id doesn't match the supplierId in token or product";
 
@@ -160,7 +164,7 @@ public class ProductController {
     @GetMapping("/{category}/bestSelling")
     public ResponseEntity<List<ProductDTO>> getBestSellingProducts(@PathVariable String category, @RequestHeader("Authorization") String authorizationHeader) {
         try {
-            validateToken(authorizationHeader);
+            //validateToken(authorizationHeader);
             boolean validCategory = productService.checkCategory(category);
             if (!validCategory) {
                 return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, "Invalid category")).build();
@@ -170,6 +174,27 @@ public class ProductController {
         } catch (Exception e) {
             return ExceptionHandler.handleException(e);
         }
+    }
+
+    @GetMapping("/{id}/searchProduct")
+    public ResponseEntity<List<ProductDTO>> searchProductsForSupplier(@PathVariable UUID supplierId, @RequestParam String searchQuery) {
+        try {
+            return ResponseEntity.ok(productService.searchProductsForSupplier(supplierId, searchQuery));
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
+        }
+    }
+
+    @GetMapping("/filter")
+    public List<ProductDTO> getProducts(
+            @RequestParam(required = true) UUID supplierId,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Boolean isAvailable,
+            @RequestParam(required = false) String priceMin,
+            @RequestParam(required = false) String priceMax,
+            @RequestParam(defaultValue = "name,asc") String[] sort) {
+
+        return productService.filterProducts(supplierId, category, isAvailable, priceMin, priceMax, sort);
     }
 
 }

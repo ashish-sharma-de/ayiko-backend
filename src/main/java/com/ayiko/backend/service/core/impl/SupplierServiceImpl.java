@@ -13,8 +13,11 @@ import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SupplierServiceImpl implements SupplierService {
@@ -143,6 +146,19 @@ public class SupplierServiceImpl implements SupplierService {
                 repository.save(supplierEntity);
             }
         }
+    }
+
+    @Override
+    public List<SupplierDTO> searchSupplier(String searchQuery) {
+        List<SupplierEntity> supplierEntityList = repository.findByCompanyNameContainingIgnoreCase(searchQuery);
+        List<SupplierDTO> collect = supplierEntityList.stream().map(EntityDTOConverter::convertSupplierEntityToSupplierDTO).collect(Collectors.toList());
+        return collect;
+    }
+
+    @Override
+    public List<SupplierDTO> findNearbySuppliers(double lat, double lon, double distance) {
+        List<SupplierEntity> nearbySuppliers = repository.findNearbySuppliers(lat, lon, distance);
+        return nearbySuppliers.stream().map(EntityDTOConverter::convertSupplierEntityToSupplierDTO).collect(Collectors.toList());
     }
 
     private SupplierDTO getSupplier(SupplierEntity entity){

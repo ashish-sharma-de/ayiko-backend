@@ -17,6 +17,7 @@ public class ProductDTO {
     private String description;
     private String category;
     private UUID supplierId;
+    private SupplierDTO supplierDTO;
     private String unitPrice;
     private String quantity;
     private List<String> imageUrlList;

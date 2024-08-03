@@ -27,4 +27,6 @@ public class SupplierDTO {
     private String businessDescription;
     private Double rating;
     private LocationDTO location;
+
+    private Long productCount;
 }
