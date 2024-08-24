@@ -21,6 +21,8 @@ public interface ProductService {
 
     List<ProductDTO> getBestSellingProductsByCategory(String category);
 
+    List<ProductDTO> getAllProductsByCategoryId(String category);
+
     boolean checkCategory(String category);
 
     List<String> getAllCategoriesForSupplier(UUID id);

@@ -134,6 +134,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDTO> getAllProductsByCategoryId(String category) {
+        return productRepository.findByCategory(category).stream().map(EntityDTOConverter::convertProductEntityToDTO).toList();
+    }
+
+    @Override
     public boolean checkCategory(String category) {
         return productRepository.existsByCategory(category);
     }
