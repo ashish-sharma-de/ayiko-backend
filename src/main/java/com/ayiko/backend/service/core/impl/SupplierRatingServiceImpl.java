@@ -24,7 +24,9 @@ public class SupplierRatingServiceImpl implements SupplierRatingService {
     public SupplierRatingDTO addSupplierRating(SupplierRatingDTO supplierRatingDTO) {
         SupplierRatingEntity ratingEntity = EntityDTOConverter.convertSupplierRatingDTOtoEntity(supplierRatingDTO);
         SupplierRatingEntity supplierRatingEntity = repository.save(ratingEntity);
-        supplierService.updateSupplierRating(supplierRatingDTO);
+        Double averageRating = this.getAverageRatingForSupplier(supplierRatingDTO.getSupplierId());
+        Long totalRatingCount = this.getTotalRatingCountForSupplier(supplierRatingDTO.getSupplierId());
+        supplierService.updateSupplierRating(supplierRatingDTO, averageRating, totalRatingCount);
         return EntityDTOConverter.convertSupplierRatingEntityToDTO(supplierRatingEntity);
     }
 

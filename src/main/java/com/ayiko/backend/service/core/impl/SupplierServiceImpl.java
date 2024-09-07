@@ -30,9 +30,6 @@ public class SupplierServiceImpl implements SupplierService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    private SupplierRatingService supplierRatingService;
-
-    @Autowired
     private JWTTokenProvider tokenProvider;
 
     @Override
@@ -163,10 +160,10 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public void updateSupplierRating(SupplierRatingDTO ratingDTO) {
+    public void updateSupplierRating(SupplierRatingDTO ratingDTO, Double averageRating, Long totalRatingCount) {
         SupplierEntity supplierEntity = repository.findById(ratingDTO.getSupplierId()).get();
-        supplierEntity.setRating(supplierRatingService.getAverageRatingForSupplier(ratingDTO.getSupplierId()));
-        supplierEntity.setTotalRating(supplierRatingService.getTotalRatingCountForSupplier(ratingDTO.getSupplierId()));
+        supplierEntity.setRating(averageRating);
+        supplierEntity.setTotalRating(totalRatingCount);
         repository.save(supplierEntity);
     }
 }

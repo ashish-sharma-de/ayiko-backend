@@ -28,5 +28,5 @@ public interface SupplierService {
 
     List<SupplierDTO> findNearbySuppliers(double lat, double lon, double distance);
 
-    void updateSupplierRating(SupplierRatingDTO ratingDTO);
+    void updateSupplierRating(SupplierRatingDTO ratingDTO, Double averageRating, Long totalRatingCount);
 }
