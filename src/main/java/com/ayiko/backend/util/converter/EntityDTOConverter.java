@@ -154,6 +154,7 @@ public class EntityDTOConverter {
                         .collect(Collectors.toSet())
                         : new HashSet<>())
                 .rating(supplierEntity.getRating())
+                .totalRatingCount(supplierEntity.getTotalRating())
                 .location(supplierEntity.getLocation() != null ?
                         LocationDTO.builder()
                                 .latitude(supplierEntity.getLocation().getY())
@@ -217,6 +218,8 @@ public class EntityDTOConverter {
                         .customerStatus(entity.getPaymentDetails() != null ? entity.getPaymentDetails().getConfirmationStatus() : null)
                         .supplierStatus(entity.getPaymentDetails() != null ? entity.getPaymentDetails().getReceiptStatus() : null)
                         .build())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
                 .build();
     }
 
@@ -336,6 +339,8 @@ public class EntityDTOConverter {
                 .driverId(orderEntity.getDriverId())
                 .driverStatus(orderEntity.getDriverStatus())
                 .isAssignedToSelf(false)
+                .createdAt(orderEntity.getCreatedAt())
+                .updatedAt(orderEntity.getUpdatedAt())
                 .build();
         if(orderEntity.getDriverId() != null && orderEntity.getSupplierId().equals(orderEntity.getDriverId())) {
             orderDTO.setAssignedToSelf(true);

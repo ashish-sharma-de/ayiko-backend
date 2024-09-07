@@ -14,8 +14,11 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/suppliers")
@@ -188,6 +191,17 @@ public class SupplierController {
         }
     }
 
+    @GetMapping("/byCategory/{category}")
+    public ResponseEntity<Set<SupplierDTO>> getSuppliersByCategory(@PathVariable String category) {
+        try {
+            List<ProductDTO> productDTOS = productService.getAllProductsByCategoryId(category);
+            Set<SupplierDTO> supplierDTOList = productDTOS.stream().map(ProductDTO::getSupplierDTO).collect(Collectors.toSet());
+            return ResponseEntity.ok(supplierDTOList);
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
+        }
+    }
+
     @GetMapping("{id}/bestsellers")
     public ResponseEntity<List<ProductDTO>> getBestsellersForSupplier(@PathVariable UUID id) {
         return getListResponseEntity(id);
@@ -213,8 +227,13 @@ public class SupplierController {
     }
 
     @GetMapping("/search")
-    public List<SupplierDTO> searchSupplier(@RequestParam String searchQuery) {
-        return supplierService.searchSupplier(searchQuery);
+    public HashMap<String, List> searchSupplier(@RequestParam String searchQuery) {
+        List<SupplierDTO> suppliers = supplierService.searchSupplier(searchQuery);
+        List<ProductDTO> products = productService.searchProducts(searchQuery);
+        HashMap<String, List> result = new HashMap<String, List>();
+        result.put("items", products);
+        result.put("suppliers", suppliers);
+        return  result;
     }
 
     @GetMapping("/nearBy")

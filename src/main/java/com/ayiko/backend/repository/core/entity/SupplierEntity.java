@@ -43,6 +43,7 @@ public class SupplierEntity {
     private String businessName;
     private String businessDescription;
     private Double rating;
+    private Long totalRating;
 
     private Point location;
 

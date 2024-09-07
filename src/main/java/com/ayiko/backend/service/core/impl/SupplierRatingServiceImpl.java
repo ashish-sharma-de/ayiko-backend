@@ -4,6 +4,7 @@ import com.ayiko.backend.dto.SupplierRatingDTO;
 import com.ayiko.backend.repository.core.SupplierRatingRepository;
 import com.ayiko.backend.repository.core.entity.SupplierRatingEntity;
 import com.ayiko.backend.service.core.SupplierRatingService;
+import com.ayiko.backend.service.core.SupplierService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,15 +17,25 @@ public class SupplierRatingServiceImpl implements SupplierRatingService {
     @Autowired
     private SupplierRatingRepository repository;
 
+    @Autowired
+    private SupplierService supplierService;
+
     @Override
     public SupplierRatingDTO addSupplierRating(SupplierRatingDTO supplierRatingDTO) {
         SupplierRatingEntity ratingEntity = EntityDTOConverter.convertSupplierRatingDTOtoEntity(supplierRatingDTO);
-        return EntityDTOConverter.convertSupplierRatingEntityToDTO(repository.save(ratingEntity));
+        SupplierRatingEntity supplierRatingEntity = repository.save(ratingEntity);
+        supplierService.updateSupplierRating(supplierRatingDTO);
+        return EntityDTOConverter.convertSupplierRatingEntityToDTO(supplierRatingEntity);
     }
 
     @Override
     public Double getAverageRatingForSupplier(UUID supplierId){
         return repository.findAverageRatingBySupplierId(supplierId);
+    }
+
+    @Override
+    public Long getTotalRatingCountForSupplier(UUID supplierId) {
+        return repository.countAllBySupplierId(supplierId);
     }
 
 }

@@ -6,10 +6,7 @@ import com.ayiko.backend.dto.cart.CartPaymentConfirmationStatus;
 import com.ayiko.backend.dto.cart.CartPaymentReceiptStatus;
 import com.ayiko.backend.dto.cart.CartStatus;
 import com.ayiko.backend.repository.core.*;
-import com.ayiko.backend.repository.core.entity.CartEntity;
-import com.ayiko.backend.repository.core.entity.CartItemEntity;
-import com.ayiko.backend.repository.core.entity.CartPaymentEntity;
-import com.ayiko.backend.repository.core.entity.ProductEntity;
+import com.ayiko.backend.repository.core.entity.*;
 import com.ayiko.backend.service.core.CartService;
 import com.ayiko.backend.util.converter.EntityDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +52,8 @@ public class CartServiceImpl implements CartService {
         if(entity.getDeliveryAddressId() != null){
             addressRepository.findById(entity.getDeliveryAddressId()).ifPresent(addressEntity -> dto.setDeliveryAddress(EntityDTOConverter.convertAddressEntityToDTO(addressEntity)));
         }
-        dto.setSupplier(EntityDTOConverter.convertSupplierEntityToSupplierDTO(supplierRepository.findById(dto.getSupplierId()).orElse(null)));
+        SupplierEntity supplierEntity = supplierRepository.findById(dto.getSupplierId()).orElse(null);
+        dto.setSupplier(EntityDTOConverter.convertSupplierEntityToSupplierDTO(supplierEntity));
         dto.setCustomer(EntityDTOConverter.convertCustomerEntityToCustomerDTO(customerRepository.findById(dto.getCustomerId()).orElse(null)));
         return dto;
     }

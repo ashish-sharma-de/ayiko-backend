@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,4 +26,6 @@ public class CartDTO {
     private PaymentDTO paymentDetails;
     private UUID orderId;
     private AddressDTO deliveryAddress;
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
 }

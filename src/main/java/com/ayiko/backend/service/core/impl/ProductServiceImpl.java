@@ -51,6 +51,7 @@ public class ProductServiceImpl implements ProductService {
             productEntity.setCategory(productDTO.getCategory() != null ? productDTO.getCategory() : productEntity.getCategory());
             productEntity.setDescription(productDTO.getDescription() != null ? productDTO.getDescription() : productEntity.getDescription());
             productEntity.setImageUrl(productDTO.getImageUrlList() != null ? EntityDTOConverter.imageUrlsToString(productDTO.getImageUrlList()) : productEntity.getImageUrl());
+            productEntity.setAvailable(productDTO.isAvailable());
             if(productDTO.getImageUrl() != null){
                 productDTO.getImageUrl().forEach(imageDTO -> {
                     ProductImageEntity productImageEntity = ProductImageEntity.builder()
@@ -151,6 +152,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> searchProductsForSupplier(UUID supplierId, String searchQuery) {
         List<ProductEntity> productEntityList = productRepository.findBySupplierIdAndNameContainingIgnoreCase(supplierId, searchQuery);
+        List<ProductDTO> collect = productEntityList.stream().map(EntityDTOConverter::convertProductEntityToDTO).collect(Collectors.toList());
+        return collect;
+    }
+
+    @Override
+    public List<ProductDTO> searchProducts(String searchQuery) {
+        List<ProductEntity> productEntityList = productRepository.findByNameContainingIgnoreCase(searchQuery);
         List<ProductDTO> collect = productEntityList.stream().map(EntityDTOConverter::convertProductEntityToDTO).collect(Collectors.toList());
         return collect;
     }

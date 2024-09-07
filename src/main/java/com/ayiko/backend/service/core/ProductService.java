@@ -29,5 +29,7 @@ public interface ProductService {
 
     List<ProductDTO> searchProductsForSupplier(UUID supplierId, String searchQuery);
 
+    List<ProductDTO> searchProducts(String searchQuery);
+
     List<ProductDTO> filterProducts(UUID supplierId, String category, Boolean isAvailable, String priceMin, String priceMax, String[] sort);
 }

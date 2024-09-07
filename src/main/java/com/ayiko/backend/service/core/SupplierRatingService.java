@@ -12,4 +12,6 @@ public interface SupplierRatingService {
     SupplierRatingDTO addSupplierRating(SupplierRatingDTO supplierRatingDTO);
 
     Double getAverageRatingForSupplier(UUID supplierId);
+
+    Long getTotalRatingCountForSupplier(UUID supplierId);
 }

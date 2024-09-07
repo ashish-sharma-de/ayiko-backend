@@ -4,6 +4,7 @@ import com.ayiko.backend.config.JWTTokenProvider;
 import com.ayiko.backend.dto.ImageDTO;
 import com.ayiko.backend.dto.LoginDTO;
 import com.ayiko.backend.dto.SupplierDTO;
+import com.ayiko.backend.dto.SupplierRatingDTO;
 import com.ayiko.backend.repository.core.entity.SupplierEntity;
 import com.ayiko.backend.repository.core.SupplierRepository;
 import com.ayiko.backend.repository.core.entity.SupplierImageEntity;
@@ -96,7 +97,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public List<SupplierDTO> getAllSuppliers() {
-        return repository.findAll().stream().map(this::getSupplier).toList();
+        return repository.findAll().stream().map(EntityDTOConverter::convertSupplierEntityToSupplierDTO).toList();
     }
 
     @Override
@@ -161,9 +162,11 @@ public class SupplierServiceImpl implements SupplierService {
         return nearbySuppliers.stream().map(EntityDTOConverter::convertSupplierEntityToSupplierDTO).collect(Collectors.toList());
     }
 
-    private SupplierDTO getSupplier(SupplierEntity entity){
-        SupplierDTO supplierDTO = EntityDTOConverter.convertSupplierEntityToSupplierDTO(entity);
-        supplierDTO.setRating(supplierRatingService.getAverageRatingForSupplier(entity.getId()));
-        return supplierDTO;
+    @Override
+    public void updateSupplierRating(SupplierRatingDTO ratingDTO) {
+        SupplierEntity supplierEntity = repository.findById(ratingDTO.getSupplierId()).get();
+        supplierEntity.setRating(supplierRatingService.getAverageRatingForSupplier(ratingDTO.getSupplierId()));
+        supplierEntity.setTotalRating(supplierRatingService.getTotalRatingCountForSupplier(ratingDTO.getSupplierId()));
+        repository.save(supplierEntity);
     }
 }

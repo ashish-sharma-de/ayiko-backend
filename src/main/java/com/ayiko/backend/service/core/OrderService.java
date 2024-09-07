@@ -19,6 +19,8 @@ public interface OrderService {
 
     void assignDriverToOrder(UUID driverId, UUID orderId);
 
+    void unAssignDriverForOrder(UUID orderId);
+
     List<OrderDTO>  getOrdersForDriver(UUID driverId);
 
     void updateDriverStatus(OrderDriverStatus driverStatus, UUID orderId);

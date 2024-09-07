@@ -118,6 +118,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void unAssignDriverForOrder(UUID orderId) {
+        OrderEntity orderEntity = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+        orderEntity.setDriverId(null);
+        orderEntity.setDriverStatus(null);
+        orderRepository.save(orderEntity);
+    }
+
+    @Override
     public List<OrderDTO> getOrdersForDriver(UUID driverId) {
         return orderRepository.findAllByDriverIdOrderByCreatedAtDesc(driverId).stream().map(this::getOrderDTO).filter(Objects::nonNull).collect(Collectors.toList());
     }

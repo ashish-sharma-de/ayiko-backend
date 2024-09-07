@@ -2,9 +2,11 @@ package com.ayiko.backend.controller.core;
 
 import com.ayiko.backend.config.JWTTokenProvider;
 import com.ayiko.backend.dto.CustomerDTO;
+import com.ayiko.backend.dto.SupplierDTO;
 import com.ayiko.backend.dto.SupplierRatingDTO;
 import com.ayiko.backend.service.core.CustomerService;
 import com.ayiko.backend.service.core.SupplierRatingService;
+import com.ayiko.backend.service.core.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,9 @@ public class SupplierRatingController {
     CustomerService customerService;
 
     @Autowired
+    SupplierService supplierService;
+
+    @Autowired
     private JWTTokenProvider tokenProvider;
 
     private final String ERROR_INVALID_TOKEN = "Token is empty or invalid, valid token required to access this API";
@@ -29,6 +34,10 @@ public class SupplierRatingController {
         validateToken(authorizationHeader);
         String username = getUsernameFromToken(authorizationHeader.substring(7));
         CustomerDTO customerByEmail = customerService.getCustomerByEmail(username);
+        SupplierDTO supplierDTO = supplierService.getSupplierById(ratingDTO.getSupplierId());
+        if(supplierDTO == null){
+            throw new RuntimeException("Invalid Supplier Id in rating DTO");
+        }
         if(customerByEmail == null) {
             throw new RuntimeException("Customer not found");
         }

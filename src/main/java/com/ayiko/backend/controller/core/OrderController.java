@@ -122,6 +122,21 @@ public class OrderController {
         }
     }
 
+
+    @PostMapping("/{orderId}/unAssignDriver")
+    public ResponseEntity unAssignToDriver(@RequestHeader("Authorization") String authorizationHeader,
+                                         @PathVariable UUID orderId) {
+        try {
+            validateToken(authorizationHeader);
+            if (orderService.getOrderById(orderId) == null)
+                return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ExceptionHandler.ERROR_INVALID_ID)).build();
+            orderService.unAssignDriverForOrder(orderId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e);
+        }
+    }
+
     @PostMapping("/{orderId}/driverAccepted")
     public ResponseEntity driverAccepted(@RequestHeader("Authorization") String authorizationHeader,
                                          @PathVariable UUID orderId) {

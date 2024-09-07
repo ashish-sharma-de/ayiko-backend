@@ -13,6 +13,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID>, J
     List<ProductEntity> findByCategory(String category);
     boolean existsByCategory(String category);
     List<ProductEntity> findBySupplierIdAndNameContainingIgnoreCase(UUID supplierId, String name);
-
+    List<ProductEntity> findByNameContainingIgnoreCase(String name);
 }
 

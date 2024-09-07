@@ -11,5 +11,6 @@ public interface SupplierRatingRepository extends JpaRepository<SupplierRatingEn
 
     @Query("SELECT AVG(e.rating) FROM SupplierRatingEntity e WHERE e.supplierId = :supplierId")
     Double findAverageRatingBySupplierId(UUID supplierId);
+    Long countAllBySupplierId(UUID supplierId);
 }
 
